@@ -39,8 +39,12 @@ class InvertedIndex
     }
 
     public LinkedList<string> Search(string word) {
-        return invertedIndex[word];
+        if (invertedIndex.TryGetValue(word, out var list)) {
+            return list;
+        }
+        return new LinkedList<string>(); // return empty if not found
     }
+
 
     public HashSet<string> SearchForOne(LinkedList<string> words) {
         HashSet<string> searchResult = new HashSet<string>();
@@ -50,19 +54,28 @@ class InvertedIndex
         return searchResult;
     }
 
+
     public HashSet<string> SearchForAll(LinkedList<string> words) {
-        HashSet<string> searchResult = new HashSet<string>();
-        foreach(string word in words) {
-            searchResult.IntersectWith(new HashSet<string>(Search(word)));
+        HashSet<string>? searchResult = null;
+
+        foreach (string word in words) {
+            var currentSet = new HashSet<string>(Search(word));
+            if (searchResult == null)
+                searchResult = currentSet;
+            else
+                searchResult.IntersectWith(currentSet);
         }
-        return searchResult;
+
+        return searchResult ?? new HashSet<string>();
     }
+
 
     public LinkedList<string> SmartSearch(LinkedList<string> necessary, LinkedList<string> atLeastOne, LinkedList<string> forbidden) {
         var firstResult = SearchForAll(necessary);
         var secondResult = SearchForOne(atLeastOne);
-        var thirdSearch = SearchForAll(forbidden);
-        var result = firstResult.IntersectWith(secondResult).Except(thirdSearch);
+        var thirdSearch = SearchForOne(forbidden);
+        firstResult.IntersectWith(secondResult);
+        var result = firstResult.Except(thirdSearch);
         return new LinkedList<string>(result);
     }
 }

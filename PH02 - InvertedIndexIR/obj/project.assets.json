@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/saba/Desktop/CodeStar/PH02 - InvertedIndexIR/InvertedIndexIR.csproj",
+      "projectUniqueName": "/home/saba/Desktop/CodeStarFinal/Summer1404-SE-Team02/PH02 - InvertedIndexIR/InvertedIndexIR.csproj",
       "projectName": "InvertedIndexIR",
-      "projectPath": "/home/saba/Desktop/CodeStar/PH02 - InvertedIndexIR/InvertedIndexIR.csproj",
+      "projectPath": "/home/saba/Desktop/CodeStarFinal/Summer1404-SE-Team02/PH02 - InvertedIndexIR/InvertedIndexIR.csproj",
       "packagesPath": "/home/saba/.nuget/packages/",
-      "outputPath": "/home/saba/Desktop/CodeStar/PH02 - InvertedIndexIR/obj/",
+      "outputPath": "/home/saba/Desktop/CodeStarFinal/Summer1404-SE-Team02/PH02 - InvertedIndexIR/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/saba/.nuget/NuGet/NuGet.Config"
