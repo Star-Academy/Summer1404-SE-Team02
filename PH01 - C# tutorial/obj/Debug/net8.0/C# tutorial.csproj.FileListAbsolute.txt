@@ -1,0 +1,36 @@
+/home/saba/Desktop/Code Star/C# tutorial/bin/Debug/net8.0/C# tutorial
+/home/saba/Desktop/Code Star/C# tutorial/bin/Debug/net8.0/C# tutorial.deps.json
+/home/saba/Desktop/Code Star/C# tutorial/bin/Debug/net8.0/C# tutorial.runtimeconfig.json
+/home/saba/Desktop/Code Star/C# tutorial/bin/Debug/net8.0/C# tutorial.dll
+/home/saba/Desktop/Code Star/C# tutorial/bin/Debug/net8.0/C# tutorial.pdb
+/home/saba/Desktop/Code Star/C# tutorial/obj/Debug/net8.0/C# tutorial.GeneratedMSBuildEditorConfig.editorconfig
+/home/saba/Desktop/Code Star/C# tutorial/obj/Debug/net8.0/C# tutorial.csproj.CoreCompileInputs.cache
+/home/saba/Desktop/Code Star/C# tutorial/obj/Debug/net8.0/C# tutorial.dll
+/home/saba/Desktop/Code Star/C# tutorial/obj/Debug/net8.0/refint/C# tutorial.dll
+/home/saba/Desktop/Code Star/C# tutorial/obj/Debug/net8.0/C# tutorial.pdb
+/home/saba/Desktop/Code Star/C# tutorial/obj/Debug/net8.0/C# tutorial.genruntimeconfig.cache
+/home/saba/Desktop/Code Star/C# tutorial/obj/Debug/net8.0/ref/C# tutorial.dll
+/home/saba/Desktop/Code Star/C# tutorial/bin/Debug/net8.0/System.IO.Pipelines.dll
+/home/saba/Desktop/Code Star/C# tutorial/bin/Debug/net8.0/System.Text.Encodings.Web.dll
+/home/saba/Desktop/Code Star/C# tutorial/bin/Debug/net8.0/System.Text.Json.dll
+/home/saba/Desktop/Code Star/C# tutorial/bin/Debug/net8.0/runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll
+/home/saba/Desktop/Code Star/C# tutorial/obj/Debug/net8.0/C# tutorial.csproj.AssemblyReference.cache
+/home/saba/Desktop/Code Star/C# tutorial/obj/Debug/net8.0/C# tutor.5D30C64F.Up2Date
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/bin/Debug/net8.0/C# tutorial
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/bin/Debug/net8.0/C# tutorial.deps.json
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/bin/Debug/net8.0/C# tutorial.runtimeconfig.json
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/bin/Debug/net8.0/C# tutorial.dll
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/bin/Debug/net8.0/C# tutorial.pdb
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/bin/Debug/net8.0/System.IO.Pipelines.dll
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/bin/Debug/net8.0/System.Text.Encodings.Web.dll
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/bin/Debug/net8.0/System.Text.Json.dll
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/bin/Debug/net8.0/runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/obj/Debug/net8.0/C# tutorial.csproj.AssemblyReference.cache
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/obj/Debug/net8.0/C# tutorial.GeneratedMSBuildEditorConfig.editorconfig
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/obj/Debug/net8.0/C# tutorial.csproj.CoreCompileInputs.cache
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/obj/Debug/net8.0/C# tutor.5D30C64F.Up2Date
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/obj/Debug/net8.0/C# tutorial.dll
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/obj/Debug/net8.0/refint/C# tutorial.dll
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/obj/Debug/net8.0/C# tutorial.pdb
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/obj/Debug/net8.0/C# tutorial.genruntimeconfig.cache
+/home/saba/Desktop/CodeStar/PH01 - C# tutorial/obj/Debug/net8.0/ref/C# tutorial.dll
