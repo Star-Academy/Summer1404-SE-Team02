@@ -1,7 +1,7 @@
 using System.Dynamic;
 
 #pragma warning disable CA1050 // Declare types in namespaces
-public class OurFileReader
+public class FileReader
 #pragma warning restore CA1050 // Declare types in namespaces
 {
     // public string folderPath {get; set;}
@@ -13,7 +13,7 @@ public class OurFileReader
         return files;
     }
 
-    // static string readFile(string fileAddress) {
+    // static string ReadFile(string fileAddress) {
     //     string txt;
     //     try
     //     {

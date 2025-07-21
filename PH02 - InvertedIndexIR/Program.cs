@@ -35,19 +35,19 @@ class Program
     static void Main()
     {
         string folderPath = @"./EnglishData";
-        var normal = new LinkedList<string>();
-        var plus = new LinkedList<string>();
-        var minus = new LinkedList<string>();
-        InvertedIndex invertedIndex = new InvertedIndex();
-        string[] files = OurFileReader.ReadAllFileNames(folderPath);
+        
+        var query = new Query();
+        SmartInvertedIndex invertedIndex = new SmartInvertedIndex();
+        string[] files = FileReader.ReadAllFileNames(folderPath);
 
         foreach (string file in files)
         {
-            invertedIndex.AddDocument(file);
+            invertedIndex.AddDocument(File.ReadAllText(file));
         }
-        string words = Console.ReadLine().ToUpper();
-        SplitAndCategorize(words, normal, plus, minus);
-        var searchResult = invertedIndex.SmartSearch(normal, plus, minus);
+
+        string input = Console.ReadLine();
+        query.ParseInput(input);
+        var searchResult = invertedIndex.SmartSearch(query);
         foreach(string w in searchResult){
             Console.WriteLine(w);
         }
