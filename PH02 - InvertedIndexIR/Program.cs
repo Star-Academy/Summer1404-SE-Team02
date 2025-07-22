@@ -39,7 +39,7 @@ class Program
         var plus = new LinkedList<string>();
         var minus = new LinkedList<string>();
         InvertedIndex invertedIndex = new InvertedIndex();
-        string[] files = OurFileReader.ReadAllFileNames(folderPath);
+        string[] files = FileReader.ReadAllFileNames(folderPath);
 
         foreach (string file in files)
         {
