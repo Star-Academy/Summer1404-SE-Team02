@@ -1,10 +1,14 @@
 public class BasicTokenizer : ITokenizer
 {
-    public IEnumerable<string> Tokenize(string text)
+    public string[] Tokenize(string text)
     {
         if (string.IsNullOrWhiteSpace(text))
-            return Enumerable.Empty<string>();
+        {
+
+            return Array.Empty<string>();
+        }
 
         return text.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
     }
 }

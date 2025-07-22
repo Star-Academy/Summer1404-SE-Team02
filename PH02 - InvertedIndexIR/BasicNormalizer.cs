@@ -7,6 +7,6 @@ public class BasicNormalizer : INormalizer
         if (string.IsNullOrEmpty(token))
             return token;
 
-        return Regex.Replace(token.ToLowerInvariant(), @"[^\w\s]", "");
+        return Regex.Replace(token.ToUpperInvariant(), @"[^\w\s]", "");
     }
 }
