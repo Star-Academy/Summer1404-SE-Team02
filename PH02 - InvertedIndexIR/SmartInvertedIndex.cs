@@ -4,7 +4,7 @@ using System.Linq;
 public class SmartInvertedIndex : InvertedIndex
 {
 
-    public HashSet<string> SearchForOne(LinkedList<string> words)
+    public HashSet<string> SearchForAtLeastOne(LinkedList<string> words)
     {
         HashSet<string> result = new();
         foreach (var word in words)
@@ -33,8 +33,8 @@ public class SmartInvertedIndex : InvertedIndex
     public LinkedList<string> SmartSearch(Query query)
     {
         var must = SearchForAll(query.RequiredWords);
-        var maybe = SearchForOne(query.OptionalWords);
-        var forbidden = SearchForOne(query.ForbiddenWords);
+        var maybe = SearchForAtLeastOne(query.OptionalWords);
+        var forbidden = SearchForAtLeastOne(query.ForbiddenWords);
                 Console.WriteLine($"Search results: {maybe.Count} documents found.");
 
         if(query.OptionalWords.Count != 0)
