@@ -1,5 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
-
+[ExcludeFromCodeCoverage]
 public class FileReader
 {
     public static string[] ReadAllFileNames(string address) {
