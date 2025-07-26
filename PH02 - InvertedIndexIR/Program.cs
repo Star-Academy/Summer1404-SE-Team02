@@ -12,7 +12,9 @@ class Program
         string folderPath = "./EnglishData";
 
         var query = new Query();
-        InvertedIndex invertedIndex = new InvertedIndex();
+        var tokenizer = new BasicTokenizer();
+        var normalizer = new BasicNormalizer();
+        InvertedIndex invertedIndex = new InvertedIndex(tokenizer, normalizer);
         var extendedSearch = new ExtendedSearch(invertedIndex);
         extendedSearch.AddFilter(new AtLeastOneFilter());
         extendedSearch.AddFilter(new NecessaryFilter());

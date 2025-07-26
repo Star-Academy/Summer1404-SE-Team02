@@ -8,9 +8,18 @@ public class InvertedIndex : IInvertedIndex
 {
     private Dictionary<string, LinkedList<string>> invertedIndex = new Dictionary<string, LinkedList<string>>();
     private HashSet<string> documentNames = new HashSet<string>();
-    private ITokenizer tokenizer = new BasicTokenizer();
-    private INormalizer normalizer = new BasicNormalizer();
-
+    private ITokenizer tokenizer;
+    private INormalizer normalizer;
+    public InvertedIndex(ITokenizer tokenizer, INormalizer normalizer)
+    {
+        this.tokenizer = tokenizer;
+        this.normalizer = normalizer;
+    }
+    public InvertedIndex()
+    {
+        this.tokenizer = new BasicTokenizer();
+        this.normalizer = new BasicNormalizer();
+    }
     public void AddDocument(string txt, string address)
     {
         string[] words;
@@ -33,7 +42,7 @@ public class InvertedIndex : IInvertedIndex
 
     public IEnumerable<string> Search(string word)
     {
-        if (invertedIndex.TryGetValue(word, out var list))
+        if (invertedIndex.TryGetValue(word.ToUpper(), out var list))
         {
             return list;
         }
