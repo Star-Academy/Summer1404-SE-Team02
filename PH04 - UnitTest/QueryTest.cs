@@ -105,29 +105,59 @@ namespace QueryTests
                   new List<List<string>>{}
               }
           };
-    [Theory]
-    [MemberData(nameof(ParseInputTestData1))]
-    //[MemberData(nameof(ParseInputTestData2))]
-    [MemberData(nameof(ParseInputTestData3))]
-    //[MemberData(nameof(ParseInputTestData4))]
-    [MemberData(nameof(ParseInputTestData5))]
-    [MemberData(nameof(ParseInputTestData6))]
-    [MemberData(nameof(ParseInputTestData7))]
-    public void ValidateParseInput(string input, string[] notations, List<List<string>> expectedResult)
+    public static IEnumerable<object[]> findingExpressionTestData =>
+    new List<object[]>
     {
-      //Arrange
-      var query = new Query();
+        new object[]
+        {
+            "get +disease -cough \"star academy\"",
+            new[] { "+", "-", "" },
+            new List<List<string>>
+            {
+                new List<string> { "DISEASE" },
+                new List<string> { "COUGH" },
+                new List<string> { "GET", "STAR ACADEMY" }
+            }
+        }
+    };
+    public static IEnumerable<object[]> findingExcludingExpressionTestData =>
+    new List<object[]>
+    {
+        new object[]
+        {
+            "get +disease -cough -\"star academy\"",
+            new[] { "+", "-", "" },
+            new List<List<string>>
+            {
+                new List<string> { "DISEASE" },
+                new List<string> { "COUGH" , "STAR ACADEMY" },
+                new List<string> { "GET" }
+            }
+        }
+    };
+        [Theory]
+        [MemberData(nameof(ParseInputTestData1))]
+        [MemberData(nameof(ParseInputTestData3))]
+        [MemberData(nameof(ParseInputTestData5))]
+        [MemberData(nameof(ParseInputTestData6))]
+        [MemberData(nameof(ParseInputTestData7))]
+        [MemberData(nameof(findingExpressionTestData))]
+        [MemberData(nameof(findingExcludingExpressionTestData))]
+    public void ValidateParseInput(string input, string[] notations, List<List<string>> expectedResult)
+        {
+            //Arrange
+            var query = new Query();
 
-      //Act
-      var parseResult = new List<List<string>> { };
-      query.ParseInput(input);
-      foreach (string notation in notations)
-      {
-        parseResult.Add(query.getWordsOfType(notation));
-      }
+            //Act
+            var parseResult = new List<List<string>> { };
+            query.ParseInput(input);
+            foreach (string notation in notations)
+            {
+                parseResult.Add(query.getWordsOfType(notation));
+            }
 
-      //Assert
-      Assert.Equal(expectedResult, parseResult);
-    }
+            //Assert
+            Assert.Equal(expectedResult, parseResult);
+        }
   }
 }

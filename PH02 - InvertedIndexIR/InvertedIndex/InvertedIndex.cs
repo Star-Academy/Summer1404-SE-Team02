@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 public class InvertedIndex : IInvertedIndex
 {
-    private Dictionary<string, LinkedList<string>> invertedIndex = new Dictionary<string, LinkedList<string>>();
+    public Dictionary<string, LinkedList<KeyValuePair<string, int>>> invertedIndex = new Dictionary<string, LinkedList<KeyValuePair<string, int>>>();
     private HashSet<string> documentNames = new HashSet<string>();
     private ITokenizer tokenizer;
     private INormalizer normalizer;
@@ -28,25 +28,46 @@ public class InvertedIndex : IInvertedIndex
         words = tokenizer.Tokenize(normalizedText);
         documentNames.Add(address);
 
-        foreach (string word1 in words)
+        for (int i = 0; i < words.Length; i++)
         {
-            if (!invertedIndex.ContainsKey(word1))
+            if (!invertedIndex.ContainsKey(words[i]))
             {
-                invertedIndex.Add(word1, new LinkedList<string>());
-                invertedIndex[word1].AddLast(address);
+                invertedIndex.Add(words[i], new LinkedList<KeyValuePair<string, int>>());
             }
-            else if (invertedIndex[word1].Last() != address)
-                invertedIndex[word1].AddLast(address);
+            invertedIndex[words[i]].AddLast(new KeyValuePair<string, int>(address, i));
         }
     }
 
     public IEnumerable<string> Search(string word)
     {
-        if (invertedIndex.TryGetValue(word.ToUpper(), out var list))
+        var normalizedText = normalizer.Normalize(word);
+        var words = tokenizer.Tokenize(normalizedText);
+        var results = new HashSet<KeyValuePair<string, int>>();
+        for (int i = 0; i < words.Length; i++)
         {
-            return list;
+            if (invertedIndex.ContainsKey(words[i].ToUpper()))
+            {
+                var list = new List<KeyValuePair<string, int>>(invertedIndex[words[i].ToUpper()]);
+                for (int j = 0; j < list.Count; j++)
+                {
+                    list[j] = new KeyValuePair<string, int>(list[j].Key, list[j].Value - i);
+                } 
+                if(i == 0)
+                {
+                    results.UnionWith(list);
+                }
+                else
+                {
+                    results.IntersectWith(list);
+                }
+            }
+            else
+            {
+                return new LinkedList<string>();
+            }
         }
-        return new LinkedList<string>();
+
+        return results.Select(kvp => kvp.Key).Distinct().ToList();
     }
     public IEnumerable<string> GetDocumentNames()
     {

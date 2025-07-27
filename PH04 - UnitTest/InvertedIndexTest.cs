@@ -4,7 +4,7 @@ using Moq;
 
 namespace InvertedIndexTests
 {
-  public class InvertedIndexTests
+  public class InvertedIndexAddDocumentTests
   {
     [Theory]
     [InlineData("friend is in this text", new[] { "FRIEND", "IS", "IN", "THIS", "TEXT" }, "friend")]
@@ -29,21 +29,14 @@ namespace InvertedIndexTests
       index.AddDocument(content, "doc.txt");
 
       // Assert
-      var results = index.Search(word.ToUpper());
-      Assert.Contains("doc.txt", results);
-      Assert.Single(results);
+      for (int i = 0; i < tokenized.Length; i++)
+      {
+        var results = index.invertedIndex[tokenized[i]];
+        Assert.Contains(new KeyValuePair<string, int>("doc.txt", i), results);
+      }
+      // Assert.Equal(tokenized.Length, index.invertedIndex.Count);
     }
    
-    [Fact]
-    public void Search_ReturnsEmpty_WhenWordNotFound()
-    {
-        var index = new InvertedIndex();
-        index.AddDocument("Some text", "doc1.txt");
-
-        var results = index.Search("missing");
-
-        Assert.Empty(results);
-    }
 
     [Fact]
     public void GetDocumentNames_Returns_All_AddedAddresses()

@@ -10,24 +10,44 @@ public class Query : IQuery
     };
     
     public void ParseInput(string input)
+{
+    foreach (var list in wordsByType.Values)
     {
-        foreach (var list in wordsByType.Values)
+        list.Clear();
+    }
+
+    var matches = System.Text.RegularExpressions.Regex.Matches(
+        input.ToUpper(),
+        @"([+-]?""[^""]+""|[+-]?\S+)"
+    );
+
+    foreach (System.Text.RegularExpressions.Match match in matches)
+    {
+        var token = match.Value;
+        string word = token;
+
+        if (token.StartsWith("+"))
         {
-            list.Clear();
+            word = token[1..];
+            if (word.StartsWith("\"") && word.EndsWith("\""))
+                word = word[1..^1];
+            wordsByType["+"].AddLast(word);
         }
-
-        var tokens = input.ToUpper().Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-
-        foreach (var token in tokens)
+        else if (token.StartsWith("-"))
         {
-            if (token.StartsWith("+"))
-                wordsByType["+"].AddLast(token[1..]);
-            else if (token.StartsWith("-"))
-                wordsByType["-"].AddLast(token[1..]);
-            else
-                wordsByType[""].AddLast(token);
+            word = token[1..];
+            if (word.StartsWith("\"") && word.EndsWith("\""))
+                word = word[1..^1];
+            wordsByType["-"].AddLast(word);
+        }
+        else
+        {
+            if (word.StartsWith("\"") && word.EndsWith("\""))
+                word = word[1..^1];
+            wordsByType[""].AddLast(word);
         }
     }
+}
 
     public List<string> getWordsOfType(string notation)
     {
