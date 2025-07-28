@@ -1,6 +1,13 @@
 public class AtLeastOneFilter : IFilter
 {
-    public IEnumerable<string> ApplyFilter(IQuery query, IInvertedIndex invertedIndex)
+    private readonly IInvertedIndexSearch _indexSearch;
+
+    public AtLeastOneFilter(IInvertedIndexSearch indexSearch)
+    {
+        _indexSearch = indexSearch;
+    }
+    
+    public IEnumerable<string> ApplyFilter(IQuery query, InvertedIndex invertedIndex)
     {
         List<string> words = query.getWordsOfType("+");
         HashSet<string> result = new();
@@ -8,12 +15,12 @@ public class AtLeastOneFilter : IFilter
         {
             foreach (var word in words)
             {
-                var docs = invertedIndex.Search(word);
+                var docs = _indexSearch.Search(word, invertedIndex);
                 result.UnionWith(docs);
             }
             return result;
         }
 
-        return  invertedIndex.GetDocumentNames();
+        return  invertedIndex.documentNames;
     }
 }

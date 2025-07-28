@@ -6,6 +6,13 @@ namespace InvertedIndexTests
 {
   public class InvertedIndexAddDocumentTests
   {
+    private Mock<ITokenizer> tokenizer;
+    private Mock<INormalizer> normalizer;
+    public InvertedIndexAddDocumentTests()
+    {
+      tokenizer = new Mock<ITokenizer>();
+      normalizer = new Mock<INormalizer>();
+    }
     [Theory]
     [InlineData("friend is in this text", new[] { "FRIEND", "IS", "IN", "THIS", "TEXT" }, "friend")]
     [InlineData("friend is in this text", new[] { "FRIEND", "IS", "IN", "THIS", "TEXT" }, "Friend")]
@@ -14,19 +21,19 @@ namespace InvertedIndexTests
     public void AddDocument_AddsWords_ToIndex(string content, string[] tokenized, string word)
     {
       // Arrange
-      var mockTokenizer = new Mock<ITokenizer>();
-      var mockNormalizer = new Mock<INormalizer>();
+      
+      var index = new InvertedIndex();
 
-      mockNormalizer.Setup(n => n.Normalize(It.IsAny<string>()))
+      normalizer.Setup(n => n.Normalize(It.IsAny<string>()))
                     .Returns<string>(s => s.ToUpper());
 
-      mockTokenizer.Setup(t => t.Tokenize(It.IsAny<string>()))
+      tokenizer.Setup(t => t.Tokenize(It.IsAny<string>()))
                    .Returns(tokenized);
 
-      var index = new InvertedIndex(mockTokenizer.Object, mockNormalizer.Object);
+      var indexAdder = new InvertedIndexDocumentAdder(tokenizer.Object, normalizer.Object);
 
       // Act
-      index.AddDocument(content, "doc.txt");
+      indexAdder.AddDocument(content, "doc.txt", index);
 
       // Assert
       for (int i = 0; i < tokenized.Length; i++)
@@ -42,10 +49,15 @@ namespace InvertedIndexTests
     public void GetDocumentNames_Returns_All_AddedAddresses()
     {
         var index = new InvertedIndex();
-        index.AddDocument("text one", "a.txt");
-        index.AddDocument("text two", "b.txt");
+        var indexAdder = new InvertedIndexDocumentAdder(tokenizer.Object,  normalizer.Object);
+        indexAdder.AddDocument("text one", "a.txt", index);
+        indexAdder.AddDocument("text two", "b.txt", index);
+        normalizer.Setup(n => n.Normalize(It.IsAny<string>()))
+          .Returns<string>(s => s.ToUpper());
 
-        var docs = index.GetDocumentNames();
+        tokenizer.Setup(t => t.Tokenize(It.IsAny<string>()))
+          .Returns(new string[]{"word1", "word2"});
+        var docs = index.documentNames;
 
         Assert.Contains("a.txt", docs);
         Assert.Contains("b.txt", docs);

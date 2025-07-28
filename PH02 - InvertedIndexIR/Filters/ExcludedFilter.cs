@@ -1,8 +1,14 @@
 public class ExcludedFilter : IFilter
 {
-    public IEnumerable<string> ApplyFilter(IQuery query, IInvertedIndex invertedIndex)
+    private readonly IInvertedIndexSearch _indexSearch;
+
+    public ExcludedFilter(IInvertedIndexSearch indexSearch)
     {
-        var docs = invertedIndex.GetDocumentNames().ToList();
+        _indexSearch = indexSearch;
+    }
+    public IEnumerable<string> ApplyFilter(IQuery query, InvertedIndex invertedIndex)
+    {
+        var docs = invertedIndex.documentNames.ToList();
         var excludedWords = query.getWordsOfType("-");
         if (excludedWords.Count == 0)
         {
@@ -11,7 +17,7 @@ public class ExcludedFilter : IFilter
 
         foreach (var word in excludedWords)
         {
-            var docsWithWord = invertedIndex.Search(word);
+            var docsWithWord = _indexSearch.Search(word, invertedIndex);
             docs = docs.Except(docsWithWord).ToList();
         }
 

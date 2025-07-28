@@ -10,44 +10,44 @@ public class Query : IQuery
     };
     
     public void ParseInput(string input)
-{
-    foreach (var list in wordsByType.Values)
     {
-        list.Clear();
+        foreach (var list in wordsByType.Values)
+        {
+            list.Clear();
+        }
+
+        var matches = System.Text.RegularExpressions.Regex.Matches(
+            input.ToUpper(),
+            @"([+-]?""[^""]+""|[+-]?\S+)"
+        );
+
+        foreach (System.Text.RegularExpressions.Match match in matches)
+        {
+            var token = match.Value;
+            string word = token;
+
+            if (token.StartsWith("+"))
+            {
+                word = token[1..];
+                if (word.StartsWith("\"") && word.EndsWith("\""))
+                    word = word[1..^1];
+                wordsByType["+"].AddLast(word);
+            }
+            else if (token.StartsWith("-"))
+            {
+                word = token[1..];
+                if (word.StartsWith("\"") && word.EndsWith("\""))
+                    word = word[1..^1];
+                wordsByType["-"].AddLast(word);
+            }
+            else
+            {
+                if (word.StartsWith("\"") && word.EndsWith("\""))
+                    word = word[1..^1];
+                wordsByType[""].AddLast(word);
+            }
+        }
     }
-
-    var matches = System.Text.RegularExpressions.Regex.Matches(
-        input.ToUpper(),
-        @"([+-]?""[^""]+""|[+-]?\S+)"
-    );
-
-    foreach (System.Text.RegularExpressions.Match match in matches)
-    {
-        var token = match.Value;
-        string word = token;
-
-        if (token.StartsWith("+"))
-        {
-            word = token[1..];
-            if (word.StartsWith("\"") && word.EndsWith("\""))
-                word = word[1..^1];
-            wordsByType["+"].AddLast(word);
-        }
-        else if (token.StartsWith("-"))
-        {
-            word = token[1..];
-            if (word.StartsWith("\"") && word.EndsWith("\""))
-                word = word[1..^1];
-            wordsByType["-"].AddLast(word);
-        }
-        else
-        {
-            if (word.StartsWith("\"") && word.EndsWith("\""))
-                word = word[1..^1];
-            wordsByType[""].AddLast(word);
-        }
-    }
-}
 
     public List<string> getWordsOfType(string notation)
     {
