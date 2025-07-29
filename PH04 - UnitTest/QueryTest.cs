@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Xunit;
 // using InvertedIndexIR.InputParser;
 using ParseInput;
+using Moq;
 
 namespace QueryTests
 {
