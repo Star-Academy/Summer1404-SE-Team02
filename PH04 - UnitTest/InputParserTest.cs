@@ -1,62 +1,79 @@
-using Xunit;
 using System.Collections.Generic;
-using InvertedIndexIR.InputParser;
+using Xunit;
+// using InvertedIndexIR.InputParser;
 
-public class InputParserTests
+namespace InvertedIndexIR.Tests
 {
-    private readonly InputParser _parser = new InputParser();
-    private const string DefaultPattern = @"([+-]?""[^""]+""|[+-]?\S+)";
-
-    [Fact]
-    public void Should_Parse_Simple_Unquoted_Terms()
+    public class InputParserTests
     {
-        var input = "apple banana orange";
-        var expected = new List<string> { "APPLE", "BANANA", "ORANGE" };
+        [Fact]
+        public void ParseInput_ReturnsCorrectDictionary_ForSimpleInput()
+        {
+            // Arrange
+            var parser = new InputParser();
+            string input = "+cat -dog fish";
+            string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
+            var notations = new List<string> { "+", "-"};
 
-        var result = _parser.ParseInput(input, DefaultPattern);
+            // Act
+            var result = parser.ParseInput(input, pattern, notations);
 
-        Assert.Equal(expected, result);
-    }
+            // Assert
+            Assert.Equal(new List<string> { "CAT" }, result["+"]);
+            Assert.Equal(new List<string> { "DOG" }, result["-"]);
+            Assert.Equal(new List<string> { "FISH" }, result[""]);
+        }
 
-    [Fact]
-    public void Should_Parse_Quoted_Terms_With_Prefix()
-    {
-        var input = "+\"green apple\" -\"red banana\"";
-        var expected = new List<string> { "+GREEN APPLE", "-RED BANANA" };
+        [Fact]
+        public void ParseInput_PutsUnprefixedWordsInDefaultKey()
+        {
+            // Arrange
+            var parser = new InputParser();
+            string input = "apple \"banana is good\" -orange";
+            string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
+            var notations = new List<string> { "+", "-"};
 
-        var result = _parser.ParseInput(input, DefaultPattern);
+            // Act
+            var result = parser.ParseInput(input, pattern, notations);
 
-        Assert.Equal(expected, result);
-    }
+            // Assert
+            Assert.Equal(new List<string> { "APPLE", "BANANA IS GOOD" }, result[""]);
+            Assert.Equal(new List<string> { "ORANGE" }, result["-"]);
+        }
 
-    [Fact]
-    public void Should_Parse_Mixed_Input()
-    {
-        var input = "apple +fruit -banana +\"green apple\"";
-        var expected = new List<string> { "APPLE", "+FRUIT", "-BANANA", "+GREEN APPLE" };
+        [Fact]
+        public void ParseInput_RemovesSurroundingQuotes()
+        {
+            // Arrange
+            var parser = new InputParser();
+            string input = "+\"cat\" -\"dog\" \"something\"";
+            string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
+            var notations = new List<string> { "+", "-" };
 
-        var result = _parser.ParseInput(input, DefaultPattern);
+            // Act
+            var result = parser.ParseInput(input, pattern, notations);
 
-        Assert.Equal(expected, result);
-    }
+            // Assert
+            Assert.Equal(new List<string> { "CAT" }, result["+"]);
+            Assert.Equal(new List<string> { "DOG" }, result["-"]);
+            Assert.Equal(new List<string> { "SOMETHING" }, result[""]);
+        }
 
-    [Fact]
-    public void Should_Handle_Empty_Input()
-    {
-        var input = "";
-        var result = _parser.ParseInput(input, DefaultPattern);
+        [Fact]
+        public void ParseInput_ReturnsEmptyLists_WhenNoMatches()
+        {
+            // Arrange
+            var parser = new InputParser();
+            string input = "12345 67890";
+            string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";  // Won't match numbers
+            var notations = new List<string> { "+", "-" };
 
-        Assert.Empty(result);
-    }
+            // Act
+            var result = parser.ParseInput(input, pattern, notations);
 
-    [Fact]
-    public void Should_Strip_Quotes_Only_When_Both_Sides_Quoted()
-    {
-        var input = "\"apple banana\" orange";
-        var expected = new List<string> { "APPLE BANANA", "ORANGE" };
-
-        var result = _parser.ParseInput(input, DefaultPattern);
-
-        Assert.Equal(expected, result);
+            // Assert
+            Assert.Empty(result["-"]);
+            Assert.Empty(result["+"]);
+        }
     }
 }

@@ -1,69 +1,68 @@
-using Xunit;
-using Moq;
 using System.Collections.Generic;
-using InvertedIndexIR.InputParser; // your real namespace
-using InvertedIndexIR;             // assuming Query is in this namespace
+using Xunit;
+// using InvertedIndexIR.InputParser;
+using ParseInput;
 
-public class QueryTests
+namespace QueryTests
 {
-    [Fact]
-    public void GetWordsOfType_Returns_Matching_Notation_Prefixes()
+    public class QueryTests
     {
-        // Arrange
-        var mockParser = new Mock<InputParser>();
-        string rawInput = "test input";
-        string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
-        var mockParsedWords = new List<string> { "APPLE", "+FRUIT", "-BANANA", "+GREEN APPLE" };
+        [Fact]
+        public void GetWordsOfType_ReturnsCorrectWords_ForExistingKey()
+        {
+            // Arrange
+            var parsedWords = new Dictionary<string, List<string>>
+            {
+                { "+", new List<string> { "cat", "dog" } },
+                { "-", new List<string> { "mouse", "rat" } }
+            };
+            var query = new Query(parsedWords);
 
-        mockParser.Setup(p => p.ParseInput(rawInput, pattern))
-                  .Returns(mockParsedWords);
+            // Act
+            var result = query.GetWordsOfType("+");
 
-        var query = new Query(mockParser.Object, rawInput, pattern);
+            // Assert
+            Assert.Equal(new List<string> { "cat", "dog" }, result);
+        }
 
-        // Act
-        var result = query.GetWordsOfType("+");
+        [Fact]
+        public void GetWordsOfType_ReturnsEmptyList_ForNonExistingKey()
+        {
+            // Arrange
+            var parsedWords = new Dictionary<string, List<string>>
+            {
+                { "+", new List<string> { "cat", "dog" } }
+            };
+            var query = new Query(parsedWords);
 
-        // Assert
-        var expected = new List<string> { "+FRUIT", "+GREEN APPLE" };
-        Assert.Equal(expected, result);
-    }
+            // Act
+            var result = query.GetWordsOfType("-");
 
-    [Fact]
-    public void GetWordsOfType_Returns_Empty_When_No_Match()
-    {
-        // Arrange
-        var mockParser = new Mock<InputParser>();
-        string rawInput = "test input";
-        string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
-        var mockParsedWords = new List<string> { "APPLE", "BANANA" };
+            // Assert
+            Assert.Empty(result);
+        }
 
-        mockParser.Setup(p => p.ParseInput(rawInput, pattern))
-                  .Returns(mockParsedWords);
+        [Fact]
+        public void GetWordsOfType_ReturnsCorrectWords_ForMultipleKeys()
+        {
+            // Arrange
+            var parsedWords = new Dictionary<string, List<string>>
+            {
+                { "+", new List<string> { "apple" } },
+                { "-", new List<string> { "banana", "orange" } },
+                { "", new List<string> { "grape" } }
+            };
+            var query = new Query(parsedWords);
 
-        var query = new Query(mockParser.Object, rawInput, pattern);
+            // Act
+            var andWords = query.GetWordsOfType("+");
+            var orWords = query.GetWordsOfType("-");
+            var notWords = query.GetWordsOfType("");
 
-        // Act
-        var result = query.GetWordsOfType("-");
-
-        // Assert
-        Assert.Empty(result);
-    }
-
-    [Fact]
-    public void GetWordsOfType_Calls_ParseInput_Once()
-    {
-        // Arrange
-        var mockParser = new Mock<InputParser>();
-        string rawInput = "some query";
-        string pattern = "some pattern";
-        mockParser.Setup(p => p.ParseInput(rawInput, pattern)).Returns(new List<string>());
-
-        var query = new Query(mockParser.Object, rawInput, pattern);
-
-        // Act
-        query.GetWordsOfType("+");
-
-        // Assert
-        mockParser.Verify(p => p.ParseInput(rawInput, pattern), Times.Once);
+            // Assert
+            Assert.Single(andWords);
+            Assert.Equal(2, orWords.Count);
+            Assert.Contains("grape", notWords);
+        }
     }
 }

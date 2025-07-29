@@ -1,32 +1,22 @@
 using System.Collections.Generic;
-using InvertedIndexIR.InputParser;
+// using InvertedIndexIR.InputParser;
+using ParseInput;
 
 public class Query : IQuery
 {
-    private readonly InputParser inputParser;
-    private readonly string rawInput;
-    private readonly string defaultPattern;
+    private readonly Dictionary<string, List<string>> _parsedWords;
 
-    public Query(InputParser inputParser, string rawInput, string defaultPattern)
+    public Query(Dictionary<string, List<string>> parsedWords)
     {
-        this.inputParser = inputParser;
-        this.rawInput = rawInput;
-        this.defaultPattern = defaultPattern;
+        _parsedWords = parsedWords;
     }
 
     public List<string> GetWordsOfType(string notation)
     {
-        var parsedWords = inputParser.ParseInput(rawInput, defaultPattern);
-        var result = new List<string>();
-
-        foreach (var word in parsedWords)
+        if (_parsedWords.ContainsKey(notation))
         {
-            if (word.StartsWith(notation))
-            {
-                result.Add(word);
-            }
+            return _parsedWords[notation];
         }
-
-        return result;
+        return new List<string>();
     }
 }

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.RegularExpressions;
-using InvertedIndexIR.InputParser;
 
 [ExcludeFromCodeCoverage]
 class Program
@@ -11,6 +10,7 @@ class Program
 
     private static string folderPath = "../EnglishData";
     private const string DefaultPattern = @"([+-]?""[^""]+""|[+-]?\S+)";
+    private static List<string> notations = new List<string>() {"+", "-"};
     static void Main()
     {
         var inputParser = new InputParser();
@@ -30,7 +30,8 @@ class Program
             indexAddDoc.AddDocument(File.ReadAllText(file), file, invertedIndex);
         }
         string input = Console.ReadLine() ?? "";
-        var query = new Query(inputParser, input, DefaultPattern);
+        var query = 
+            new Query(inputParser.ParseInput(input, DefaultPattern, notations));
         var searchResult = extendedSearch.Search(query, invertedIndex);
         foreach (string w in searchResult)
         {

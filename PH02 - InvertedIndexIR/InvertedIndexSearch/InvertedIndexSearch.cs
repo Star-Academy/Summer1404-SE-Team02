@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 public class InvertedIndexSearch : IInvertedIndexSearch
 {
-    // private readonly IInvertedIndex _invertedIndex;
     private readonly ITokenizer _tokenizer;
     private readonly INormalizer _normalizer;
 
