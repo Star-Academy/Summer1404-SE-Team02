@@ -28,7 +28,7 @@ jobs:
 
             - name: Test
               run: dotnet test --no-restore --verbosity normal --collect:"XPlat Code Coverage"
-              # working-directory: StarAcademy.FullTextSearch.sln
+              working-directory: "./PH04 - UnitTest/"
 
             - name: Publish code coverage reports to codecove.io
               uses: codecov/codecov-action@v1
