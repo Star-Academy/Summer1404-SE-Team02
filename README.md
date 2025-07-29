@@ -1,0 +1,1 @@
+![Test Badge](https://github.com/Star-Academy/Summer1404-SE-Team02/actions/workflows/buildPipeline.yml/badge.svg?branch=PH06)
