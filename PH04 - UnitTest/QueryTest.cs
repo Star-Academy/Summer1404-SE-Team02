@@ -1,163 +1,69 @@
-
-using System;
 using Xunit;
+using Moq;
+using System.Collections.Generic;
+using InvertedIndexIR.InputParser; // your real namespace
+using InvertedIndexIR;             // assuming Query is in this namespace
 
-namespace QueryTests
+public class QueryTests
 {
-  public class QueryTest
-  {
-    public static IEnumerable<object[]> ParseInputTestData1 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none -fine",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" },
-                      new List<string> { "FINE" },
-                      new List<string> { "GET", "SICK", "HOME"}
-                  }
-              }
-          };
-
-    public static IEnumerable<object[]> ParseInputTestData2 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none + -fine",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" },
-                      new List<string> { "FINE" },
-                      new List<string> { "GET", "SICK", "HOME"}
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData4 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none +-fine",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" },
-                      new List<string> { },
-                      new List<string> { "GET", "SICK", "HOME"}
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData3 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none ",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" },
-                      new List<string> {  },
-                      new List<string> { "GET", "SICK", "HOME"}
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData5 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none ",
-                  new[] { "+" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" }
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData6 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { },
-                      new List<string> { },
-                      new List<string> { }
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData7 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none -fine",
-                  new string[0],
-                  new List<List<string>>{}
-              }
-          };
-    public static IEnumerable<object[]> findingExpressionTestData =>
-    new List<object[]>
+    [Fact]
+    public void GetWordsOfType_Returns_Matching_Notation_Prefixes()
     {
-        new object[]
-        {
-            "get +disease -cough \"star academy\"",
-            new[] { "+", "-", "" },
-            new List<List<string>>
-            {
-                new List<string> { "DISEASE" },
-                new List<string> { "COUGH" },
-                new List<string> { "GET", "STAR ACADEMY" }
-            }
-        }
-    };
-    public static IEnumerable<object[]> findingExcludingExpressionTestData =>
-    new List<object[]>
+        // Arrange
+        var mockParser = new Mock<InputParser>();
+        string rawInput = "test input";
+        string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
+        var mockParsedWords = new List<string> { "APPLE", "+FRUIT", "-BANANA", "+GREEN APPLE" };
+
+        mockParser.Setup(p => p.ParseInput(rawInput, pattern))
+                  .Returns(mockParsedWords);
+
+        var query = new Query(mockParser.Object, rawInput, pattern);
+
+        // Act
+        var result = query.GetWordsOfType("+");
+
+        // Assert
+        var expected = new List<string> { "+FRUIT", "+GREEN APPLE" };
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void GetWordsOfType_Returns_Empty_When_No_Match()
     {
-        new object[]
-        {
-            "get +disease -cough -\"star academy\"",
-            new[] { "+", "-", "" },
-            new List<List<string>>
-            {
-                new List<string> { "DISEASE" },
-                new List<string> { "COUGH" , "STAR ACADEMY" },
-                new List<string> { "GET" }
-            }
-        }
-    };
-        [Theory]
-        [MemberData(nameof(ParseInputTestData1))]
-        [MemberData(nameof(ParseInputTestData3))]
-        [MemberData(nameof(ParseInputTestData5))]
-        [MemberData(nameof(ParseInputTestData6))]
-        [MemberData(nameof(ParseInputTestData7))]
-        [MemberData(nameof(findingExpressionTestData))]
-        [MemberData(nameof(findingExcludingExpressionTestData))]
-    public void ValidateParseInput(string input, string[] notations, List<List<string>> expectedResult)
-        {
-            //Arrange
-            var query = new Query();
+        // Arrange
+        var mockParser = new Mock<InputParser>();
+        string rawInput = "test input";
+        string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
+        var mockParsedWords = new List<string> { "APPLE", "BANANA" };
 
-            //Act
-            var parseResult = new List<List<string>> { };
-            query.ParseInput(input);
-            foreach (string notation in notations)
-            {
-                parseResult.Add(query.getWordsOfType(notation));
-            }
+        mockParser.Setup(p => p.ParseInput(rawInput, pattern))
+                  .Returns(mockParsedWords);
 
-            //Assert
-            Assert.Equal(expectedResult, parseResult);
-        }
-  }
+        var query = new Query(mockParser.Object, rawInput, pattern);
+
+        // Act
+        var result = query.GetWordsOfType("-");
+
+        // Assert
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public void GetWordsOfType_Calls_ParseInput_Once()
+    {
+        // Arrange
+        var mockParser = new Mock<InputParser>();
+        string rawInput = "some query";
+        string pattern = "some pattern";
+        mockParser.Setup(p => p.ParseInput(rawInput, pattern)).Returns(new List<string>());
+
+        var query = new Query(mockParser.Object, rawInput, pattern);
+
+        // Act
+        query.GetWordsOfType("+");
+
+        // Assert
+        mockParser.Verify(p => p.ParseInput(rawInput, pattern), Times.Once);
+    }
 }

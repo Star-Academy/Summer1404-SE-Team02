@@ -3,16 +3,17 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.RegularExpressions;
+using InvertedIndexIR.InputParser;
 
 [ExcludeFromCodeCoverage]
 class Program
 {
 
+    private static string folderPath = "../EnglishData";
+    private const string DefaultPattern = @"([+-]?""[^""]+""|[+-]?\S+)";
     static void Main()
     {
-        string folderPath = "C:\\Users\\RSKALA\\Desktop\\codeStar\\PH02 - InvertedIndexIR\\EnglishData";
-
-        var query = new Query();
+        var inputParser = new InputParser();
         var tokenizer = new BasicTokenizer();
         var normalizer = new BasicNormalizer();
         var invertedIndex = new InvertedIndex();
@@ -29,7 +30,7 @@ class Program
             indexAddDoc.AddDocument(File.ReadAllText(file), file, invertedIndex);
         }
         string input = Console.ReadLine() ?? "";
-        query.ParseInput(input);
+        var query = new Query(inputParser, input, DefaultPattern);
         var searchResult = extendedSearch.Search(query, invertedIndex);
         foreach (string w in searchResult)
         {

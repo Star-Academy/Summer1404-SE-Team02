@@ -9,7 +9,7 @@ public class AtLeastOneFilter : IFilter
     
     public IEnumerable<string> ApplyFilter(IQuery query, InvertedIndex invertedIndex)
     {
-        List<string> words = query.getWordsOfType("+");
+        List<string> words = query.GetWordsOfType("+");
         HashSet<string> result = new();
         if (words.Count > 0)
         {

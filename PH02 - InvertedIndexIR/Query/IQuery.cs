@@ -1,5 +1,5 @@
 public interface IQuery
 {
-   void ParseInput(string input);
-   List<string> getWordsOfType(string notation);
+   // void ParseInput(string input);
+   List<string> GetWordsOfType(string notation);
 }

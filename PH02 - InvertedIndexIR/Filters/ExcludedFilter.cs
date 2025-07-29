@@ -9,7 +9,7 @@ public class ExcludedFilter : IFilter
     public IEnumerable<string> ApplyFilter(IQuery query, InvertedIndex invertedIndex)
     {
         var docs = invertedIndex.documentNames.ToList();
-        var excludedWords = query.getWordsOfType("-");
+        var excludedWords = query.GetWordsOfType("-");
         if (excludedWords.Count == 0)
         {
             return docs; // No exclusions, return all documents

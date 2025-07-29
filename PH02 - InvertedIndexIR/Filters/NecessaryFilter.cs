@@ -8,7 +8,7 @@ public class NecessaryFilter : IFilter
     }
     public IEnumerable<string> ApplyFilter(IQuery query, InvertedIndex invertedIndex)
     {
-        var words = query.getWordsOfType("");
+        var words = query.GetWordsOfType("");
         var result = invertedIndex.documentNames;
         foreach (var word in words)
         {

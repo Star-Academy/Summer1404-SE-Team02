@@ -16,7 +16,7 @@ namespace FilterTest
             var index = new InvertedIndex();
             index.documentNames = new HashSet<string> { "doc1", "doc2", "doc3", "doc4" };
 
-            mockQuery.Setup(q => q.getWordsOfType("+")).Returns(new List<string> { "apple", "banana" });
+            mockQuery.Setup(q => q.GetWordsOfType("+")).Returns(new List<string> { "apple", "banana" });
 
             mockIndexSearch.Setup(i => i.Search("apple", It.IsAny<InvertedIndex>()))
                 .Returns(new List<string> { "doc1", "doc2" });
@@ -40,7 +40,7 @@ namespace FilterTest
             var filter = new AtLeastOneFilter(mockIndexSearch.Object);
             var index = new InvertedIndex();
             index.documentNames = new HashSet<string> { "docA", "docB" };
-            mockQuery.Setup(q => q.getWordsOfType("+")).Returns(new List<string>());
+            mockQuery.Setup(q => q.GetWordsOfType("+")).Returns(new List<string>());
             
             // Act
             var result = filter.ApplyFilter(mockQuery.Object, index);
