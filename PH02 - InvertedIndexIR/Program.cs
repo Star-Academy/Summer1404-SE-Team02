@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 class Program
 {
 
-    private static string folderPath = "../EnglishData";
+    private static string folderPath = "./EnglishData";
     private const string DefaultPattern = @"([+-]?""[^""]+""|[+-]?\S+)";
     private static List<string> notations = new List<string>() {"+", "-"};
     static void Main()
