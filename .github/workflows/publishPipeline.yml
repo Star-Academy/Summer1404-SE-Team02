@@ -19,8 +19,8 @@ jobs:
         uses: pozetroninc/github-action-get-latest-release@master
         with:
           repository: Star-Academy/Summer1404-SE-Team02
-      - name: Show folder contents
-        run: ls -R
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build library and generate NuGet Package
         run: dotnet pack -c Release -o artifacts -p:PackageVersion=${{ steps.version.outputs.release }}
         working-directory: "PH02 - InvertedIndexIR"
