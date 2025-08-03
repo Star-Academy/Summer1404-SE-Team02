@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace PH01___C__tutorial;
 
 public class LessonAdder : ILessonAdder
@@ -13,7 +15,20 @@ public class LessonAdder : ILessonAdder
         {
             LessonName = name
         }).ToList();
-        _stContext.Lessons.AddRange(lessons);
+        foreach (var lesson in lessons)
+        {
+            AddLesson(lesson);
+        }
         _stContext.SaveChanges();
+    }
+
+    public void AddLesson(Lesson lesson)
+    {
+        bool exists = _stContext.Lessons.Any(l => l.LessonName == lesson.LessonName);
+
+        if (!exists)
+        {
+            _stContext.Lessons.Add(lesson);
+        }
     }
 }

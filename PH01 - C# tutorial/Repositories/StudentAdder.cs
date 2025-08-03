@@ -11,7 +11,19 @@ public class StudentAdder : IStudentAdder
     
     public void AddStudents(List<Student> students)
     {
-        _stContext.Students.AddRange(students);
+        foreach (var student in students)
+        {
+            AddStudent(student);
+        }
         _stContext.SaveChanges();
+    }
+    public void AddStudent(Student student)
+    {
+        bool exists = _stContext.Students.Any(s => s.StudentNumber == student.StudentNumber);
+
+        if (!exists)
+        {
+            _stContext.Students.Add(student);
+        }
     }
 }

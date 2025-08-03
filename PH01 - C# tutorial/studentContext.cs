@@ -29,5 +29,9 @@ public class StudentContext : DbContext
         
         modelBuilder.Entity<Score>()
             .HasKey(sc => new { sc.StudentNumber, sc.LessonId });
+        
+        modelBuilder.Entity<Lesson>()
+            .HasIndex(s => s.LessonName)
+            .IsUnique();
     }
 }

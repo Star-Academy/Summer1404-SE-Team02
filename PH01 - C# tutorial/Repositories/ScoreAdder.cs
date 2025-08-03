@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace PH01___C__tutorial;
 
 public class ScoreAdder : IScoreAdder
@@ -11,13 +13,30 @@ public class ScoreAdder : IScoreAdder
     {
         var lessonMap = _stContext.Lessons
             .ToDictionary(l => l.LessonName, l => l.LessonId);
+        
         var scores = scoreItems.Select(si => new Score
         {
             StudentNumber = si.StudentNumber,
             LessonId = lessonMap[si.Lesson.Trim()],
             Grade = si.Score
         }).ToList();
-        _stContext.Scores.AddRange(scores);
+        foreach (var score in scores)
+        {
+            AddScore(score);
+        }
         _stContext.SaveChanges();
     }
+
+    public void AddScore(Score score)
+    {
+        bool exists = _stContext.Scores.Any(s =>
+            s.StudentNumber == score.StudentNumber &&
+            s.LessonId == score.LessonId);
+
+        if (!exists)
+        {
+            _stContext.Scores.Add(score);
+        }
+    }
+
 }
