@@ -2,7 +2,8 @@
 using System.Text.Json;
 using System.IO;                
 using System.Collections.Generic; 
-using System.Linq;               
+using System.Linq;
+using PH01___C__tutorial;
 
 class Program
 {
@@ -25,55 +26,28 @@ class Program
     }
     static void Main(string[] args)
     {
-        var studentJson = readJsonFile("student.json");
-        var scoreJson = readJsonFile("score.json");
+        var studentJson = readJsonFile("../../../student.json");
+        var scoreJson = readJsonFile("../../../score.json");
         using var StContext = new StudentContext();
+        var lessonAdder = new LessonAdder(StContext);
+        var scoreAdder = new ScoreAdder(StContext);
+        var studentAdder = new StudentAdder(StContext);
 
         var students = JsonSerializer.Deserialize<List<Student>>(studentJson)
         ?? new List<Student>();
         var scoreItems = JsonSerializer.Deserialize<List<ScoreItem>>(scoreJson)
         ?? new List<ScoreItem>();
-        
-        // Extract distinct lesson names
-        var lessonNames = scoreItems
-            .Select(si => si.Lesson.Trim())
-            .Distinct()
-            .ToList();
 
-        // Create Lesson entities
-        var lessons = lessonNames.Select(name => new Lesson
-        {
-            LessonName = name
-        }).ToList();
+        lessonAdder.AddLessons(LessonNameExtractor.ExtractName(scoreItems));
+        scoreAdder.AddScores(scoreItems);
+        studentAdder.AddStudents(students);
 
-
-        // Save lessons to generate LessonID
-        StContext.Lessons.AddRange(lessons);
-        StContext.SaveChanges(); // LessonID is auto-generated here
-
-        // Build map: LessonName → LessonID
-        var lessonMap = StContext.Lessons
-            .ToDictionary(l => l.LessonName, l => l.LessonID);
-
-        // Convert ScoreItem to Score
-        var scores = scoreItems.Select(si => new Score
-        {
-            StudentNumber = si.StudentNumber,
-            LessonID = lessonMap[si.Lesson.Trim()],
-            Grade = si.Score
-        }).ToList();
-
-        // Save students and scores
-        StContext.Students.AddRange(students);
-        StContext.Scores.AddRange(scores);
-        StContext.SaveChanges();
-
-        var averageByStudent = scores
+        var averageByStudent = scoreItems
         .GroupBy(item => item.StudentNumber)
         .Select(g => new
         {
             StudentNumber = g.Key,
-            AverageScore = g.Average(item => item.Grade)
+            AverageScore = g.Average(item => item.Score)
         })
         .OrderByDescending(item => item.AverageScore)
         .Take(3);
