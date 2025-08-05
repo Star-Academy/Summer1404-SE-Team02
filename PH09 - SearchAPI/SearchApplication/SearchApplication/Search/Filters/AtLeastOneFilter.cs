@@ -25,7 +25,6 @@ public class AtLeastOneFilter : IFilter
             }
             return result;
         }
-
         return  invertedIndex.documentNames;
     }
 }

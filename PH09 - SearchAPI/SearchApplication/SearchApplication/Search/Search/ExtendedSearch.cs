@@ -7,7 +7,6 @@ public class ExtendedSearch : IExtendedSearch
 {
     private List<IFilter> _filters = new List<IFilter>();
     
-
     public IEnumerable<string> Search(IQuery query, InvertedIndex index)
     {
         var result = new HashSet<string>(index.documentNames);

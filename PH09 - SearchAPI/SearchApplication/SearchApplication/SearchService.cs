@@ -10,8 +10,9 @@ using InvertedIndexWebApi.InvertedIndexDTO;
 using InvertedIndexWebApi.InvertedIndexDocumentAdder;
 using InvertedIndexWebApi.Normalizer;
 using InvertedIndexWebApi.Tokenizer;
+using SearchApplication;
 
-public class SearchService
+public class SearchService :ISearchService
 {
     private readonly InvertedIndex _index;
     private readonly IExtendedSearch _extendedSearch;

@@ -9,8 +9,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<SearchService>();
 
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

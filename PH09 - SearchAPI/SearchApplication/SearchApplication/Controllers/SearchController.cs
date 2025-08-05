@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SearchApplication;
 
 namespace WebApplication1.Controllers
 {
@@ -9,9 +10,9 @@ namespace WebApplication1.Controllers
     [ProducesResponseType(StatusCodes.Status200OK)]
     public class SearchController : ControllerBase
     {
-        private readonly SearchService _searchService;
+        private readonly ISearchService _searchService;
 
-        public SearchController(SearchService searchService)
+        public SearchController(ISearchService searchService)
         {
             _searchService = searchService;
         }
