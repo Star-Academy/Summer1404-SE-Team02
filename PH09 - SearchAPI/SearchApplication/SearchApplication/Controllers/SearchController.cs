@@ -6,6 +6,7 @@ namespace WebApplication1.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public class SearchController : ControllerBase
     {
         private readonly SearchService _searchService;

@@ -9,7 +9,6 @@ public class Query : IQuery
     public Query(Dictionary<string, List<string>> parsedWords)
     {
         _parsedWords = parsedWords;
-        //change
     }
 
     public List<string> GetWordsOfType(string notation)
