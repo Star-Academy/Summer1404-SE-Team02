@@ -1,4 +1,4 @@
-namespace ParseInput;
+namespace InvertedIndexWebApi.ParseInput;
 
 public interface IInputParser
 {

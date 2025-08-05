@@ -1,3 +1,8 @@
+namespace InvertedIndexWebApi.ExtendedSearch;
+using InvertedIndexWebApi.Filters;
+using InvertedIndexWebApi.Query;
+using InvertedIndexWebApi.InvertedIndexDTO;
+
 public class ExtendedSearch : IExtendedSearch
 {
     private List<IFilter> _filters = new List<IFilter>();

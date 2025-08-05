@@ -1,3 +1,7 @@
+namespace InvertedIndexWebApi.Filters;
+using InvertedIndexWebApi.InvertedIndexDocumentSearch;
+using InvertedIndexWebApi.InvertedIndexDTO;
+using InvertedIndexWebApi.Query;
 public class ExcludedFilter : IFilter
 {
     private readonly IInvertedIndexSearch _indexSearch;

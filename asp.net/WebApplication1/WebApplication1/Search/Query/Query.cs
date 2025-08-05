@@ -1,5 +1,5 @@
+namespace InvertedIndexWebApi.Query;
 using System.Collections.Generic;
-// using InvertedIndexIR.InputParser;
 using ParseInput;
 
 public class Query : IQuery

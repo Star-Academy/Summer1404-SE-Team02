@@ -3,6 +3,7 @@ using System.Collections;
 using System.Dynamic;
 using System.IO;
 using System.Text.RegularExpressions;
+namespace InvertedIndexWebApi.InvertedIndexDTO;
 
 public class InvertedIndex 
 {

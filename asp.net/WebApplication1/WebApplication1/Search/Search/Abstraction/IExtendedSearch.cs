@@ -1,4 +1,8 @@
 using System.Reflection;
+using InvertedIndexWebApi.Filters;
+using InvertedIndexWebApi.Query;
+using InvertedIndexWebApi.InvertedIndexDTO;
+namespace InvertedIndexWebApi.ExtendedSearch;
 
 public interface IExtendedSearch
 {

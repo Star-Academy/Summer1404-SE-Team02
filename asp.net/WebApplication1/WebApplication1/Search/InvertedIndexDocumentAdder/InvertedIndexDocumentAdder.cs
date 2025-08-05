@@ -3,6 +3,10 @@ using System.Collections;
 using System.Dynamic;
 using System.IO;
 using System.Text.RegularExpressions;
+namespace InvertedIndexWebApi.InvertedIndexDocumentAdder;
+using InvertedIndexWebApi.InvertedIndexDTO;
+using InvertedIndexWebApi.Normalizer;
+using InvertedIndexWebApi.Tokenizer;
 
 public class InvertedIndexDocumentAdder : IInvertedIndexDocumentAdder
 {

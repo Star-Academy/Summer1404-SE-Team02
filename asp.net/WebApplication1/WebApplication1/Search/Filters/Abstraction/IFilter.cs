@@ -1,3 +1,6 @@
+namespace InvertedIndexWebApi.Filters;
+using InvertedIndexWebApi.InvertedIndexDTO;
+using InvertedIndexWebApi.Query;
 
 public interface IFilter
 {

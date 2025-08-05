@@ -1,3 +1,5 @@
+namespace InvertedIndexWebApi.Query;
+
 public interface IQuery
 {
    // void ParseInput(string input);

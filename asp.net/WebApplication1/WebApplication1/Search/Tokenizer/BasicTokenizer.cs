@@ -1,3 +1,5 @@
+namespace InvertedIndexWebApi.Tokenizer;
+
 public class BasicTokenizer : ITokenizer
 {
     public string[] Tokenize(string text)

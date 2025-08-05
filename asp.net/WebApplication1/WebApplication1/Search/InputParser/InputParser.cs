@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using ParseInput;
+namespace InvertedIndexWebApi.ParseInput;
 
 public class InputParser : IInputParser
 {

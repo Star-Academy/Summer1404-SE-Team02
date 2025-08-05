@@ -1,4 +1,8 @@
 using System.Collections.Generic;
+namespace InvertedIndexWebApi.InvertedIndexDocumentSearch;
+using InvertedIndexWebApi.Normalizer;
+using InvertedIndexWebApi.Tokenizer;
+using InvertedIndexWebApi.InvertedIndexDTO;
 
 public class InvertedIndexSearch : IInvertedIndexSearch
 {

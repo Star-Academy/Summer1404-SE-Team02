@@ -7,15 +7,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<ParseInput.IInputParser, InputParser>();
-builder.Services.AddSingleton<ITokenizer, BasicTokenizer>();
-builder.Services.AddSingleton<INormalizer, BasicNormalizer>();
-builder.Services.AddSingleton<IInvertedIndexSearch, InvertedIndexSearch>();
-builder.Services.AddSingleton<IInvertedIndexDocumentAdder, InvertedIndexDocumentAdder>();
-builder.Services.AddSingleton<IExtendedSearch, ExtendedSearch>();
-builder.Services.AddSingleton<IFilter, AtLeastOneFilter>();
-builder.Services.AddSingleton<IFilter, ExcludedFilter>();
-builder.Services.AddSingleton<IFilter, NecessaryFilter>();
+builder.Services.AddSingleton<SearchService>();
+
 
 
 var app = builder.Build();
