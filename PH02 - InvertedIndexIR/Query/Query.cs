@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-// using InvertedIndexIR.InputParser;
-using ParseInput;
-
+using InvertedIndexIR.Query.Abstraction;
+namespace InvertedIndexIR.Query;
 public class Query : IQuery
 {
     private readonly Dictionary<string, List<string>> _parsedWords;
@@ -9,7 +8,6 @@ public class Query : IQuery
     public Query(Dictionary<string, List<string>> parsedWords)
     {
         _parsedWords = parsedWords;
-        //change
     }
 
     public List<string> GetWordsOfType(string notation)

@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using InvertedIndexIR.Filters;
+using InvertedIndexIR.InvertedIndexSearch.Abstracion;
+using InvertedIndexIR.Query.Abstraction;
 using Xunit;
 using Moq;
 

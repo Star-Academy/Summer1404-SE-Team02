@@ -1,4 +1,4 @@
-namespace ParseInput;
+namespace InvertedIndexIR.InputParser.Abstraction;
 
 public interface IInputParser
 {

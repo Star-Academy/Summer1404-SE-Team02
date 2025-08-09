@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using InvertedIndexIR.Filters.Abstraction;
+using InvertedIndexIR.Query.Abstraction;
+using InvertedIndexIR.Search.Extended;
 using Xunit;
 using Moq;
 
@@ -42,12 +45,10 @@ namespace ExtendedSearchTests
         {
             // Arrange 
             var index = new InvertedIndex();
-            // mockIndex.Setup(i => i.GetDocumentNames()).Returns(new List<string> { "doc1", "doc2" });
             index.documentNames = new HashSet<string>() { "doc1", "doc2" };
             var query = Mock.Of<IQuery>();
-            // Act
             var search = new ExtendedSearch();
-
+            // Act
             var result = search.Search(query, index).ToList();
             // Assert
             result.Should().HaveCount(2).And.Contain(new[] { "doc1", "doc2" });

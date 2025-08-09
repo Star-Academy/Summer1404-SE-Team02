@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using ParseInput;
+using InvertedIndexIR.InputParser.Abstraction;
+
+namespace InvertedIndexIR.InputParser;
 
 public class InputParser : IInputParser
 {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
+using InvertedIndexIR.InvertedIndexDocumentAdder;
 using Xunit;
 using Moq;
 
@@ -41,7 +42,7 @@ namespace InvertedIndexTests
       // Assert
       for (int i = 0; i < tokenized.Length; i++)
       {
-        var results = index.invertedIndex[tokenized[i]];
+        var results = index.wordDocMap[tokenized[i]];
         results.Should().Contain(kv => kv.Key == "doc.txt" && kv.Value == i);
       }
     }
@@ -50,17 +51,22 @@ namespace InvertedIndexTests
     [Fact]
     public void GetDocumentNames_Returns_All_AddedAddresses()
     {
+        // Arrange
         var index = new InvertedIndex();
         var indexAdder = new InvertedIndexDocumentAdder(tokenizer.Object,  normalizer.Object);
-        indexAdder.AddDocument("text one", "a.txt", index);
-        indexAdder.AddDocument("text two", "b.txt", index);
         normalizer.Setup(n => n.Normalize(It.IsAny<string>()))
           .Returns<string>(s => s.ToUpper());
 
         tokenizer.Setup(t => t.Tokenize(It.IsAny<string>()))
           .Returns(new string[]{"word1", "word2"});
+        
+        //Act
+        indexAdder.AddDocument("text one", "a.txt", index);
+        indexAdder.AddDocument("text two", "b.txt", index);
+      
         var docs = index.documentNames;
-
+        
+        //Assert
         docs.Should().HaveCount(2).And.Contain("a.txt", "b.txt");
     }
 
