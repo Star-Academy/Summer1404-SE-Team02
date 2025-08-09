@@ -8,8 +8,23 @@ public class StudentContext : DbContext
     public DbSet<Score> Scores { get; set; }
     public DbSet<Lesson> Lessons { get; set; }
     
+    public StudentContext(DbContextOptions<StudentContext> options)
+        : base(options)
+    {
+    }
+
+    public StudentContext()
+    {
+    }
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseNpgsql($"Host=127.0.0.1;Port=5432;Database=university;User Id=postgres;Password=myPassword;");
+    {
+        if (!options.IsConfigured)
+        {
+            options.UseNpgsql("Host=127.0.0.1;Port=5432;Database=university;User Id=postgres;Password=myPassword;");
+        }
+    }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
