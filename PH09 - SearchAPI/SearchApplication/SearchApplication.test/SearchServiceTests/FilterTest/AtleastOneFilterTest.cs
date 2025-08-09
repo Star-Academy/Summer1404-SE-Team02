@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using InvertedIndexWebApi.Filters;
 using InvertedIndexWebApi.InvertedIndexDocumentSearch;
 using InvertedIndexWebApi.InvertedIndexDTO;
@@ -33,8 +34,7 @@ namespace FilterTest
             var result = filter.ApplyFilter(mockQuery.Object, index);
 
             // Assert
-            var expected = new HashSet<string> { "doc1", "doc2", "doc3" };
-            Assert.Equal(expected, new HashSet<string>(result));
+            result.Should().HaveCount(3).And.Contain(new HashSet<string> { "doc1", "doc2", "doc3" });
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace FilterTest
             var result = filter.ApplyFilter(mockQuery.Object, index);
 
             // Assert
-            Assert.Equal(new List<string> { "docA", "docB" }, result);
+            result.Should().HaveCount(2).And.Contain(new HashSet<string> { "docA", "docB" });
         }
     }
 }
