@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 using Moq;
 
@@ -30,8 +31,7 @@ namespace FilterTest
             var result = filter.ApplyFilter(mockQuery.Object, index);
 
             // Assert
-            var expected = new HashSet<string> { "doc4" };
-            Assert.Equal(expected, new HashSet<string>(result));
+            result.Should().ContainSingle().And.Contain(new HashSet<string> { "doc4" });
         }
         
 
@@ -51,7 +51,7 @@ namespace FilterTest
             var result = filter.ApplyFilter(mockQuery.Object, index);
 
             // Assert
-            Assert.Equal(new List<string> { "docA", "docB" }, result);
+            result.Should().HaveCount(2).And.Contain(new HashSet<string> { "docA", "docB" });
         }
         
     }
