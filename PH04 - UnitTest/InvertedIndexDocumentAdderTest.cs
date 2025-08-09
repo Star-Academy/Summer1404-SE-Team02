@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 using Moq;
 
@@ -20,7 +21,6 @@ namespace InvertedIndexTests
     [InlineData("friend is in this text", new[] { "FRIEND", "IS", "IN", "THIS", "TEXT" }, "friend")]
     [InlineData("friend is in this text", new[] { "FRIEND", "IS", "IN", "THIS", "TEXT" }, "Friend")]
     [InlineData("friend friend is in this text", new[] { "FRIEND", "FRIEND", "IS", "IN", "THIS", "TEXT" }, "friend")]
-
     public void AddDocument_AddsWords_ToIndex(string content, string[] tokenized, string word)
     {
       // Arrange
@@ -42,9 +42,8 @@ namespace InvertedIndexTests
       for (int i = 0; i < tokenized.Length; i++)
       {
         var results = index.invertedIndex[tokenized[i]];
-        Assert.Contains(new KeyValuePair<string, int>("doc.txt", i), results);
+        results.Should().Contain(kv => kv.Key == "doc.txt" && kv.Value == i);
       }
-      // Assert.Equal(tokenized.Length, index.invertedIndex.Count);
     }
    
 
@@ -62,9 +61,7 @@ namespace InvertedIndexTests
           .Returns(new string[]{"word1", "word2"});
         var docs = index.documentNames;
 
-        Assert.Contains("a.txt", docs);
-        Assert.Contains("b.txt", docs);
-        Assert.Equal(2, docs.Count());
+        docs.Should().HaveCount(2).And.Contain("a.txt", "b.txt");
     }
 
   }

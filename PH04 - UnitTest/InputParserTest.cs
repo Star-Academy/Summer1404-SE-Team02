@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Xunit;
 using Moq;
 
@@ -22,9 +23,10 @@ namespace InvertedIndexIR.Tests
             var result = parser.ParseInput(input, pattern, notations);
 
             // Assert
-            Assert.Equal(new List<string> { "CAT" }, result["+"]);
-            Assert.Equal(new List<string> { "DOG" }, result["-"]);
-            Assert.Equal(new List<string> { "FISH" }, result[""]);
+            result["+"].Should().BeEquivalentTo(new List<string> { "CAT" });
+            result["-"].Should().BeEquivalentTo(new List<string> { "DOG" });
+            result[""].Should().BeEquivalentTo(new List<string> { "FISH" });
+
         }
 
         [Fact]
@@ -40,8 +42,9 @@ namespace InvertedIndexIR.Tests
             var result = parser.ParseInput(input, pattern, notations);
 
             // Assert
-            Assert.Equal(new List<string> { "APPLE", "BANANA IS GOOD" }, result[""]);
-            Assert.Equal(new List<string> { "ORANGE" }, result["-"]);
+            result["-"].Should().BeEquivalentTo(new List<string> { "ORANGE" });
+            result[""].Should().BeEquivalentTo(new List<string> { "APPLE", "BANANA IS GOOD" });
+
         }
 
         [Fact]
@@ -57,9 +60,10 @@ namespace InvertedIndexIR.Tests
             var result = parser.ParseInput(input, pattern, notations);
 
             // Assert
-            Assert.Equal(new List<string> { "CAT" }, result["+"]);
-            Assert.Equal(new List<string> { "DOG" }, result["-"]);
-            Assert.Equal(new List<string> { "SOMETHING" }, result[""]);
+            result["+"].Should().BeEquivalentTo(new List<string> { "CAT" });
+            result["-"].Should().BeEquivalentTo(new List<string> { "DOG" });
+            result[""].Should().BeEquivalentTo(new List<string> { "SOMETHING" });
+
         }
 
         [Fact]
@@ -75,8 +79,8 @@ namespace InvertedIndexIR.Tests
             var result = parser.ParseInput(input, pattern, notations);
 
             // Assert
-            Assert.Empty(result["-"]);
-            Assert.Empty(result["+"]);
+            result["+"].Should().BeEmpty();
+            result["-"].Should().BeEmpty();
         }
     }
 }
