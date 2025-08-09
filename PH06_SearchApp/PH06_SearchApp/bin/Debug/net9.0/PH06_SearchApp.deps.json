@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "PH06_SearchApp/1.0.0": {
+        "dependencies": {
+          "StarAcademy.CodeStar1404.Team02.FullTextSearch": "1.0.6"
+        },
+        "runtime": {
+          "PH06_SearchApp.dll": {}
+        }
+      },
+      "StarAcademy.CodeStar1404.Team02.FullTextSearch/1.0.6": {
+        "runtime": {
+          "lib/net9.0/InvertedIndexIR.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "PH06_SearchApp/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "StarAcademy.CodeStar1404.Team02.FullTextSearch/1.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-swEF2BXUbCrsVIfhmZVyH0HXjMO01y5hc2O3vty8ujy/EF3m+jgA1TToCDl+KaRLxaMc4jyCc0vwuxiJ/vnewQ==",
+      "path": "staracademy.codestar1404.team02.fulltextsearch/1.0.6",
+      "hashPath": "staracademy.codestar1404.team02.fulltextsearch.1.0.6.nupkg.sha512"
+    }
+  }
+}
