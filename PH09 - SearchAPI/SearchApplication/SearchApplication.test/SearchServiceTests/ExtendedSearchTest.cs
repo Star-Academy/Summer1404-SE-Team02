@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using InvertedIndexWebApi.ExtendedSearch;
 using InvertedIndexWebApi.Filters;
 using InvertedIndexWebApi.InvertedIndexDTO;
@@ -37,8 +38,7 @@ namespace ExtendedSearchTests
             var result = search.Search(query, index).ToHashSet();
 
             // Assert
-            Assert.Single(result);
-            Assert.Contains("doc2", result);
+            result.Should().ContainSingle(x => x == "doc2");
         }
 
         [Fact]
@@ -54,9 +54,7 @@ namespace ExtendedSearchTests
 
             var result = search.Search(query, index).ToList();
             // Assert
-            Assert.Equal(2, result.Count);
-            Assert.Contains("doc1", result);
-            Assert.Contains("doc2", result);
+            result.Should().HaveCount(2).And.Contain(new[] { "doc1", "doc2" });
         }
     }
 }

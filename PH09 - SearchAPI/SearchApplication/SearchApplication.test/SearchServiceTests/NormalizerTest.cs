@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using InvertedIndexWebApi.Normalizer;
 using Xunit;
 using Moq;
@@ -25,7 +26,7 @@ namespace NormalizerTests
             string normalized = normalizer.Normalize(input);
 
             //Assert
-            Assert.Equal(expectedResult, normalized);
+            normalized.Should().Be(expectedResult);
         }
   }
 }

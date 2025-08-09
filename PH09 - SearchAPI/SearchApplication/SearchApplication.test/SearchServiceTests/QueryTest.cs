@@ -1,7 +1,9 @@
 using System.Collections.Generic;
-using InvertedIndexWebApi.Query;
+using FluentAssertions;
 using Xunit;
 // using InvertedIndexIR.InputParser;
+using InvertedIndexWebApi.ParseInput;
+using InvertedIndexWebApi.Query;
 using Moq;
 
 namespace QueryTests
@@ -23,7 +25,7 @@ namespace QueryTests
             var result = query.GetWordsOfType("+");
 
             // Assert
-            Assert.Equal(new List<string> { "cat", "dog" }, result);
+            result.Should().BeEquivalentTo(new List<string> { "cat", "dog" });
         }
 
         [Fact]
@@ -40,7 +42,7 @@ namespace QueryTests
             var result = query.GetWordsOfType("-");
 
             // Assert
-            Assert.Empty(result);
+            result.Should().BeEmpty();
         }
 
         [Fact]
@@ -56,14 +58,14 @@ namespace QueryTests
             var query = new Query(parsedWords);
 
             // Act
-            var andWords = query.GetWordsOfType("+");
-            var orWords = query.GetWordsOfType("-");
-            var notWords = query.GetWordsOfType("");
+            var andWords = query.GetWordsOfType("");
+            var orWords = query.GetWordsOfType("+");
+            var notWords = query.GetWordsOfType("-");
 
             // Assert
-            Assert.Single(andWords);
-            Assert.Equal(2, orWords.Count);
-            Assert.Contains("grape", notWords);
+            andWords.Should().ContainSingle(x => x == "grape");
+            orWords.Should().ContainSingle(x => x == "apple");
+            notWords.Should().BeEquivalentTo(new List<string> { "banana", "orange" });
         }
     }
 }

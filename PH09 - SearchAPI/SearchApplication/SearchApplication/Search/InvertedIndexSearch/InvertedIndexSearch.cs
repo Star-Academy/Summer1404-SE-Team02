@@ -35,7 +35,7 @@ public class InvertedIndexSearch : IInvertedIndexSearch
                     results.IntersectWith(list);
             }
             else
-                return new LinkedList<string>();
+                return new List<string>();
         }
         return results.Select(kvp => kvp.Key).Distinct().ToList();
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 using System;
+using FluentAssertions;
 using InvertedIndexWebApi.InvertedIndexDocumentSearch;
 using InvertedIndexWebApi.InvertedIndexDTO;
 using InvertedIndexWebApi.Normalizer;
@@ -32,8 +33,8 @@ namespace InvertedIndexTests
         private void AddToIndex(string word, string doc, int pos)
         {
             if (!invertedIndex.invertedIndex.ContainsKey(word))
-                invertedIndex.invertedIndex[word] = new LinkedList<KeyValuePair<string, int>>();
-            invertedIndex.invertedIndex[word].AddLast(new KeyValuePair<string, int>(doc, pos));
+                invertedIndex.invertedIndex[word] = new List<KeyValuePair<string, int>>();
+            invertedIndex.invertedIndex[word].Add(new KeyValuePair<string, int>(doc, pos));
         }
 
         [Fact]
@@ -46,9 +47,8 @@ namespace InvertedIndexTests
                 .Returns(new string[] {"FRIEND"});
             var invertedIndexSearch = new InvertedIndexSearch(tokenizer.Object, normalizer.Object);
             var result = invertedIndexSearch.Search("FRIEND", invertedIndex);
-            Assert.Equal(2, result.Count());
-            Assert.Equal("doc1.txt", result.ElementAt(0));
-            Assert.Equal("doc2.txt", result.ElementAt(1));
+            result.Should().HaveCount(2)
+                .And.Contain(new[] { "doc1.txt", "doc2.txt" });
         }
 
         [Fact]
@@ -61,8 +61,7 @@ namespace InvertedIndexTests
                 .Returns(new string[] {"INVERTED", "INDEX", "SEARCH"});
             var invertedIndexSearch = new InvertedIndexSearch(tokenizer.Object, normalizer.Object);
             var result = invertedIndexSearch.Search("INVERTED INDEX SEARCH", invertedIndex);
-            Assert.Single(result);
-            Assert.Equal("doc1.txt", result.ElementAt(0));
+            result.Should().ContainSingle(x => x == "doc1.txt");
         }
 
         [Fact]
@@ -75,7 +74,7 @@ namespace InvertedIndexTests
                 .Returns(new string[] {"MISSING"});
             var invertedIndexSearch = new InvertedIndexSearch(tokenizer.Object, normalizer.Object);
             var result = invertedIndexSearch.Search("MISSING", invertedIndex);
-            Assert.Empty(result);
+            result.Should().BeEmpty();
         }
     
         [Fact]
@@ -91,8 +90,7 @@ namespace InvertedIndexTests
             AddToIndex("INDEX", "doc2.txt", 2);
             AddToIndex("SEARCH", "doc2.txt", 5);
             var result = invertedIndexSearch.Search("INVERTED INDEX SEARCH", invertedIndex);
-            Assert.Single(result);
-            Assert.Equal("doc1.txt", result.ElementAt(0));
+            result.Should().ContainSingle(x => x == "doc1.txt");
         }
 
         [Fact]
@@ -108,9 +106,9 @@ namespace InvertedIndexTests
             AddToIndex("INDEX", "doc3.txt", 1);
             AddToIndex("SEARCH", "doc3.txt", 2);
             var result = invertedIndexSearch.Search("INVERTED INDEX SEARCH", invertedIndex);
-            Assert.Equal(2, result.Count());
-            Assert.Contains("doc1.txt", result);
-            Assert.Contains("doc3.txt", result);
+            
+            result.Should().HaveCount(2)
+                .And.Contain(new[] { "doc1.txt", "doc3.txt" });
         }
 
         [Fact]
@@ -123,9 +121,8 @@ namespace InvertedIndexTests
                 .Returns(new string[] {"NOTFOUND", "PHRASE"});
             var invertedIndexSearch = new InvertedIndexSearch(tokenizer.Object, normalizer.Object);
             var result = invertedIndexSearch.Search("NOTFOUND PHRASE", invertedIndex);
-            Assert.Empty(result);
+            result.Should().BeEmpty();
         }
-
   }
 
 }

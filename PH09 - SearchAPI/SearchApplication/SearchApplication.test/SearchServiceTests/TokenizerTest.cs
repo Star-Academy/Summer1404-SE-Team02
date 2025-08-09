@@ -1,5 +1,6 @@
 
 using System;
+using FluentAssertions;
 using InvertedIndexWebApi.Tokenizer;
 using Xunit;
 using Moq;
@@ -24,7 +25,7 @@ namespace TokenizerTests
             string[] tokenized = tokenizer.Tokenize(input);
 
             //Assert
-            Assert.Equal(expectedResult, tokenized);
+            tokenized.Should().BeEquivalentTo(expectedResult);
         }
   }
 }

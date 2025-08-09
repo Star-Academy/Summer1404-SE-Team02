@@ -29,9 +29,9 @@ public class InvertedIndexDocumentAdder : IInvertedIndexDocumentAdder
         {
             if (!invertedIndex.invertedIndex.ContainsKey(words[i]))
             {
-                invertedIndex.invertedIndex.Add(words[i], new LinkedList<KeyValuePair<string, int>>());
+                invertedIndex.invertedIndex.Add(words[i], new List<KeyValuePair<string, int>>());
             }
-            invertedIndex.invertedIndex[words[i]].AddLast(new KeyValuePair<string, int>(address, i));
+            invertedIndex.invertedIndex[words[i]].Add(new KeyValuePair<string, int>(address, i));
         }
     }
 }
