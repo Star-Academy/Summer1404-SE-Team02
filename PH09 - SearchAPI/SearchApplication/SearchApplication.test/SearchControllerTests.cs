@@ -1,3 +1,4 @@
+using FluentAssertions;
 using WebApplication1.Controllers;
 using Moq;
 using InvertedIndexWebApi.Normalizer;
@@ -22,10 +23,10 @@ namespace SearchApplication.test
             //assert
             var result = actionResult as OkObjectResult;
             var resultDocuments = result.Value as List<string>;
-            Assert.NotNull(result);
-            Assert.Equal(2, resultDocuments.Count());
-            Assert.Equal(new List<string> { "Doc1", "Doc2" }, resultDocuments);
-            Assert.Equal(200, result.StatusCode);
+            result.Should().NotBeNull();
+            resultDocuments.Should().HaveCount(2);
+            resultDocuments.Should().BeEquivalentTo(new List<string> { "Doc1", "Doc2" });
+            result.StatusCode.Should().Be(200);
         }
         [Fact]
         public void SearchReturnsBadRequestWhenInputEmpty()
@@ -39,9 +40,9 @@ namespace SearchApplication.test
 
             // Assert
             var result = actionResult as BadRequestObjectResult;
-            Assert.NotNull(result);
-            Assert.Equal(400, result.StatusCode);
-            Assert.Equal("Query is required", result.Value);
+            result.Should().NotBeNull();
+            result.StatusCode.Should().Be(400);
+            result.Value.Should().Be("Query is required");
         }
 
     }
