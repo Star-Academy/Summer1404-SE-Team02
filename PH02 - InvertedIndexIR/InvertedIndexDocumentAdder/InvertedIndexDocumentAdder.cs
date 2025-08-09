@@ -15,10 +15,8 @@ public class InvertedIndexDocumentAdder : IInvertedIndexDocumentAdder
     }
     public void AddDocument(string txt, string address, InvertedIndex invertedIndex)
     {
-        string[] words;
-        string normalizedText;
-        normalizedText = normalizer.Normalize(txt);
-        words = tokenizer.Tokenize(normalizedText);
+        var normalizedText = normalizer.Normalize(txt);
+        var words = tokenizer.Tokenize(normalizedText);
         invertedIndex.documentNames.Add(address);
 
         for (int i = 0; i < words.Length; i++)
