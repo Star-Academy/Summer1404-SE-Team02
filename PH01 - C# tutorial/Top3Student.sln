@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PH01 - C# tutorial", "Top3Students\PH01 - C# tutorial.csproj", "{BC76F7D5-A21B-452D-8AEE-1C45EDAEF620}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Top3Students.test", "Top3Students.test\Top3Students.test.csproj", "{58934AA5-E92B-431D-8E1B-79620438E54C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC76F7D5-A21B-452D-8AEE-1C45EDAEF620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC76F7D5-A21B-452D-8AEE-1C45EDAEF620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC76F7D5-A21B-452D-8AEE-1C45EDAEF620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC76F7D5-A21B-452D-8AEE-1C45EDAEF620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58934AA5-E92B-431D-8E1B-79620438E54C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58934AA5-E92B-431D-8E1B-79620438E54C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58934AA5-E92B-431D-8E1B-79620438E54C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58934AA5-E92B-431D-8E1B-79620438E54C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
