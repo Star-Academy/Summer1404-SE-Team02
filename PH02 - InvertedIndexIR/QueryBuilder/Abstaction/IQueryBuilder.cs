@@ -1,5 +1,6 @@
+using InvertedIndexIR.DTO;
+
 namespace InvertedIndexIR.QueryBuilder.Abstraction;
-using InvertedIndexIR.Query;
 
 public interface IQueryBuilder
 {

@@ -1,17 +1,17 @@
+using InvertedIndexIR.DTO;
 using InvertedIndexIR.QueryBuilder.Abstraction;
 
 namespace InvertedIndexIR.QueryBuilder;
-using InvertedIndexIR.Query;
 
 public class QueryBuilder : IQueryBuilder
 {
     public Query BuildQuery(List<string> parsedWords, List<string> notations)
     {
-        var result = new Dictionary<string, List<string>>();
-        result[""] = new List<string>();
+        var result = new Query();
+        result.ParsedWords[""] = new List<string>();
         foreach (var notation in notations)
         {
-            result.Add(notation, new List<string>());
+            result.ParsedWords.Add(notation, new List<string>());
         }
         foreach (var word in parsedWords)
         {
@@ -20,12 +20,12 @@ public class QueryBuilder : IQueryBuilder
             {
                 if (word.StartsWith(notation))
                 {
-                    result[notation].Add(word.Substring(notation.Length));
+                    result.ParsedWords[notation].Add(word.Substring(notation.Length).ToUpper());
                     added = true;
                 }
             }
-            if(!added) result[""].Add(word);
+            if(!added) result.ParsedWords[""].Add(word.ToUpper());
         }
-        return new Query(result);
+        return result;
     }
 }

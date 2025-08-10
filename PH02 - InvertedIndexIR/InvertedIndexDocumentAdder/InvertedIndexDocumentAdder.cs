@@ -22,15 +22,15 @@ public class InvertedIndexDocumentAdder : IInvertedIndexDocumentAdder
     {
         var normalizedText = _normalizer.Normalize(txt);
         var words = _tokenizer.Tokenize(normalizedText);
-        invertedIndex.documentNames.Add(address);
+        invertedIndex.DocumentNames.Add(address);
 
         for (int i = 0; i < words.Length; i++)
         {
-            if (!invertedIndex.wordDocMap.ContainsKey(words[i]))
+            if (!invertedIndex.WordDocMap.ContainsKey(words[i]))
             {
-                invertedIndex.wordDocMap.Add(words[i], new List<KeyValuePair<string, int>>());
+                invertedIndex.WordDocMap.Add(words[i], new List<KeyValuePair<string, int>>());
             }
-            invertedIndex.wordDocMap[words[i]].Add(new KeyValuePair<string, int>(address, i));
+            invertedIndex.WordDocMap[words[i]].Add(new KeyValuePair<string, int>(address, i));
         }
     }
 }

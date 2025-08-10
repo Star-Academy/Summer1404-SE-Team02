@@ -3,20 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using InvertedIndexIR.InvertedIndexDocumentAdder;
+using InvertedIndexIR.InvertedIndexDocumentAdder.Abstraction;
+using InvertedIndexIR.InvertedIndexSearch;
 using Xunit;
-using Moq;
+using NSubstitute;
 
 
 namespace InvertedIndexTests
 {
   public class InvertedIndexAddDocumentTests
   {
-    private Mock<ITokenizer> tokenizer;
-    private Mock<INormalizer> normalizer;
+    private readonly ITokenizer _tokenizer;
+    private readonly INormalizer _normalizer;
+    private readonly IInvertedIndexDocumentAdder _sut;
     public InvertedIndexAddDocumentTests()
     {
-      tokenizer = new Mock<ITokenizer>();
-      normalizer = new Mock<INormalizer>();
+      _tokenizer = NSubstitute.Substitute.For<ITokenizer>();
+      _normalizer = NSubstitute.Substitute.For<INormalizer>();
+      _sut = new InvertedIndexDocumentAdder(_tokenizer, _normalizer);
     }
     [Theory]
     [InlineData("friend is in this text", new[] { "FRIEND", "IS", "IN", "THIS", "TEXT" }, "friend")]
@@ -28,21 +32,18 @@ namespace InvertedIndexTests
       
       var index = new InvertedIndex();
 
-      normalizer.Setup(n => n.Normalize(It.IsAny<string>()))
-                    .Returns<string>(s => s.ToUpper());
-
-      tokenizer.Setup(t => t.Tokenize(It.IsAny<string>()))
-                   .Returns(tokenized);
-
-      var indexAdder = new InvertedIndexDocumentAdder(tokenizer.Object, normalizer.Object);
-
+      _normalizer.Normalize(Arg.Any<string>())
+        .Returns(callInfo => callInfo.Arg<string>().ToUpper());
+      _tokenizer.Tokenize(Arg.Any<string>())
+        .Returns(tokenized);
+      
       // Act
-      indexAdder.AddDocument(content, "doc.txt", index);
+      _sut.AddDocument(content, "doc.txt", index);
 
       // Assert
       for (int i = 0; i < tokenized.Length; i++)
       {
-        var results = index.wordDocMap[tokenized[i]];
+        var results = index.WordDocMap[tokenized[i]];
         results.Should().Contain(kv => kv.Key == "doc.txt" && kv.Value == i);
       }
     }
@@ -53,18 +54,16 @@ namespace InvertedIndexTests
     {
         // Arrange
         var index = new InvertedIndex();
-        var indexAdder = new InvertedIndexDocumentAdder(tokenizer.Object,  normalizer.Object);
-        normalizer.Setup(n => n.Normalize(It.IsAny<string>()))
-          .Returns<string>(s => s.ToUpper());
-
-        tokenizer.Setup(t => t.Tokenize(It.IsAny<string>()))
+        _normalizer.Normalize(Arg.Any<string>())
+          .Returns(callInfo => callInfo.Arg<string>().ToUpper());
+        _tokenizer.Tokenize(Arg.Any<string>())
           .Returns(new string[]{"word1", "word2"});
         
         //Act
-        indexAdder.AddDocument("text one", "a.txt", index);
-        indexAdder.AddDocument("text two", "b.txt", index);
+        _sut.AddDocument("text one", "a.txt", index);
+        _sut.AddDocument("text two", "b.txt", index);
       
-        var docs = index.documentNames;
+        var docs = index.DocumentNames;
         
         //Assert
         docs.Should().HaveCount(2).And.Contain("a.txt", "b.txt");

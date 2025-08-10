@@ -1,25 +1,28 @@
 using System.Collections.Generic;
+using InvertedIndexIR.DTO;
 using InvertedIndexIR.Filters.Abstraction;
 using InvertedIndexIR.InvertedIndexSearch;
 using InvertedIndexIR.InvertedIndexSearch.Abstracion;
-using InvertedIndexIR.Query;
-using InvertedIndexIR.Query.Abstraction;
+using InvertedIndexIR.QueryGetWordsOfType;
+using InvertedIndexIR.QueryGetWordsOfType.Abstraction;
 
 namespace InvertedIndexIR.Filters;
 
 public class ExcludedFilter : IFilter
 {
     private readonly IInvertedIndexSearch _indexSearch;
+    private readonly IQueryWordsOfTypeGetter _queryWordsOfTypeGetter;
 
-    public ExcludedFilter(IInvertedIndexSearch indexSearch)
+    public ExcludedFilter(IInvertedIndexSearch indexSearch,  IQueryWordsOfTypeGetter queryWordsOfTypeGetter)
     {
-        if(indexSearch == null) throw new ArgumentNullException(nameof(indexSearch));
-        _indexSearch = indexSearch;
+        _indexSearch = indexSearch ?? throw new ArgumentNullException(nameof(indexSearch));
+        _queryWordsOfTypeGetter = queryWordsOfTypeGetter ??
+                                  throw new ArgumentNullException(nameof(queryWordsOfTypeGetter));;
     }
-    public IReadOnlyCollection<string> ApplyFilter(IQuery query, InvertedIndex invertedIndex)
+    public IReadOnlyCollection<string> ApplyFilter(Query query, InvertedIndex invertedIndex)
     {
-        var docs = invertedIndex.documentNames.ToList();
-        var excludedWords = query.GetWordsOfType("-");
+        var docs = invertedIndex.DocumentNames.ToList();
+        var excludedWords = _queryWordsOfTypeGetter.GetWordsOfType(query, "-");
         if (excludedWords.Count == 0)
         {
             return docs;

@@ -7,7 +7,7 @@ using InvertedIndexIR.Filters;
 using InvertedIndexIR.InputParser;
 using InvertedIndexIR.InvertedIndexDocumentAdder;
 using InvertedIndexIR.InvertedIndexSearch;
-using InvertedIndexIR.Query;
+using InvertedIndexIR.QueryGetWordsOfType;
 using InvertedIndexIR.QueryBuilder;
 using InvertedIndexIR.Search.Extended;
 
@@ -21,6 +21,7 @@ class Program
     static void Main()
     {
         var queryBuileder = new QueryBuilder();
+        var queryWordsOfTypeGetter = new QueryWordsOfTypeGetter();
         var inputParser = new InputParser();
         var tokenizer = new BasicTokenizer();
         var normalizer = new BasicNormalizer();
@@ -28,9 +29,9 @@ class Program
         var indexSearch = new InvertedIndexSearch(tokenizer, normalizer);
         var indexAddDoc = new InvertedIndexDocumentAdder(tokenizer, normalizer);
         var extendedSearch = new ExtendedSearch();
-        extendedSearch.AddFilter(new AtLeastOneFilter(indexSearch));
-        extendedSearch.AddFilter(new NecessaryFilter(indexSearch));
-        extendedSearch.AddFilter(new ExcludedFilter(indexSearch));
+        extendedSearch.AddFilter(new AtLeastOneFilter(indexSearch, queryWordsOfTypeGetter));
+        extendedSearch.AddFilter(new NecessaryFilter(indexSearch,  queryWordsOfTypeGetter));
+        extendedSearch.AddFilter(new ExcludedFilter(indexSearch, queryWordsOfTypeGetter));
         string[] files = FileReader.ReadAllFileNames(folderPath);
         Console.WriteLine("Files found: " + files.Length);
         foreach (string file in files)

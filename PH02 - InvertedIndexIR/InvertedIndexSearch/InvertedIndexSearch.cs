@@ -21,9 +21,9 @@ public class InvertedIndexSearch : IInvertedIndexSearch
         var results = new HashSet<KeyValuePair<string, int>>();
         for (int i = 0; i < words.Length; i++)
         {
-            if (invertedIndex.wordDocMap.ContainsKey(words[i].ToUpper()))
+            if (invertedIndex.WordDocMap.ContainsKey(words[i].ToUpper()))
             {
-                var list = new List<KeyValuePair<string, int>>(invertedIndex.wordDocMap[words[i].ToUpper()]);
+                var list = new List<KeyValuePair<string, int>>(invertedIndex.WordDocMap[words[i].ToUpper()]);
                 for (int j = 0; j < list.Count; j++)
                 {
                     list[j] = new KeyValuePair<string, int>(list[j].Key, list[j].Value - i);
