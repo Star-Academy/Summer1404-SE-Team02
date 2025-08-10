@@ -3,6 +3,12 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.RegularExpressions;
+using InvertedIndexIR.Filters;
+using InvertedIndexIR.InputParser;
+using InvertedIndexIR.InvertedIndexDocumentAdder;
+using InvertedIndexIR.InvertedIndexSearch;
+using InvertedIndexIR.Query;
+using InvertedIndexIR.Search.Extended;
 
 [ExcludeFromCodeCoverage]
 class Program

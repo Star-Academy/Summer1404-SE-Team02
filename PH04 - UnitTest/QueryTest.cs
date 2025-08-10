@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using FluentAssertions;
+using InvertedIndexIR.Query;
 using Xunit;
-// using InvertedIndexIR.InputParser;
-using ParseInput;
 using Moq;
 
 namespace QueryTests

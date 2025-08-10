@@ -4,6 +4,7 @@ using System.Linq;
 using Xunit;
 using System;
 using FluentAssertions;
+using InvertedIndexIR.InvertedIndexSearch;
 using Xunit;
 using Moq;
 
@@ -28,9 +29,9 @@ namespace InvertedIndexTests
 
         private void AddToIndex(string word, string doc, int pos)
         {
-            if (!invertedIndex.invertedIndex.ContainsKey(word))
-                invertedIndex.invertedIndex[word] = new List<KeyValuePair<string, int>>();
-            invertedIndex.invertedIndex[word].Add(new KeyValuePair<string, int>(doc, pos));
+            if (!invertedIndex.wordDocMap.ContainsKey(word))
+                invertedIndex.wordDocMap[word] = new List<KeyValuePair<string, int>>();
+            invertedIndex.wordDocMap[word].Add(new KeyValuePair<string, int>(doc, pos));
         }
 
         [Fact]
