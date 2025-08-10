@@ -8,6 +8,7 @@ using InvertedIndexIR.InputParser;
 using InvertedIndexIR.InvertedIndexDocumentAdder;
 using InvertedIndexIR.InvertedIndexSearch;
 using InvertedIndexIR.Query;
+using InvertedIndexIR.QueryBuilder;
 using InvertedIndexIR.Search.Extended;
 
 [ExcludeFromCodeCoverage]
@@ -19,6 +20,7 @@ class Program
     private static List<string> notations = new List<string>() {"+", "-"};
     static void Main()
     {
+        var queryBuileder = new QueryBuilder();
         var inputParser = new InputParser();
         var tokenizer = new BasicTokenizer();
         var normalizer = new BasicNormalizer();
@@ -36,8 +38,8 @@ class Program
             indexAddDoc.AddDocument(File.ReadAllText(file), file, invertedIndex);
         }
         string input = Console.ReadLine() ?? "";
-        var query = 
-            new Query(inputParser.ParseInput(input, DefaultPattern, notations));
+        var parsedInput = inputParser.ParseInput(input, DefaultPattern, notations);
+        var query = queryBuileder.BuildQuery(parsedInput, notations);
         var searchResult = extendedSearch.Search(query, invertedIndex);
         foreach (string w in searchResult)
         {

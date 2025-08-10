@@ -1,12 +1,18 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using InvertedIndexIR.InputParser.Abstraction;
+using InvertedIndexIR.QueryBuilder.Abstraction;
 
 namespace InvertedIndexIR.InputParser;
 
 public class InputParser : IInputParser
 {
-    public Dictionary<string, List<string>> ParseInput(string input, string pattern, List<string> notations)
+    // private readonly IQueryBuilder _queryBuilder;
+    // public InputParser(IQueryBuilder builder)
+    // {
+    //     _queryBuilder = builder;
+    // }
+    public List<string> ParseInput(string input, string pattern, List<string> notations)
     {
         var matches = Regex.Matches(
             input.ToUpper(),
@@ -16,39 +22,11 @@ public class InputParser : IInputParser
         
         foreach (Match match in matches)
         {
-            parsedWords.Add(ExtractPhrase(match.Value));
+            parsedWords.Add(match.Value.Replace("\"", ""));
         }
-        return AddToDictionary(parsedWords, notations);
+        return parsedWords;
     }
-
-    private string ExtractPhrase(string phrase)
-    {
-        return phrase.Replace("\"", "");
-    }
-
-    private Dictionary<string, List<string>> AddToDictionary(List<string> words, List<string> notations)
-    {
-        var result = new Dictionary<string, List<string>>();
-        result[""] = new List<string>();
-        foreach (var notation in notations)
-        {
-            result.Add(notation, new List<string>());
-        }
-        foreach (var word in words)
-        {
-            bool added = false;
-            foreach (var notation in notations)
-            {
-                if (word.StartsWith(notation))
-                {
-                    result[notation].Add(word.Substring(notation.Length));
-                    added = true;
-                }
-            }
-            if(!added) result[""].Add(word);
-        }
-        return result;
-    }
+    
 }
 
 
