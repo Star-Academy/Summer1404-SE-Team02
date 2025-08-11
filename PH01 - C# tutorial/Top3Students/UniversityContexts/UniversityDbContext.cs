@@ -1,19 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using PH01___C__tutorial.UniversityContexts;
 
-public class StudentContext : DbContext
+public class UniversityDbContext : DbContext, ILessonDbContext,  IStudentDbContext, IScoreDbContext
 {
     public DbSet<Student> Students { get; set; }
     public DbSet<Score> Scores { get; set; }
     public DbSet<Lesson> Lessons { get; set; }
     
-    public StudentContext(DbContextOptions<StudentContext> options)
+    public UniversityDbContext(DbContextOptions<UniversityDbContext> options)
         : base(options)
     {
     }
 
-    public StudentContext()
+    public UniversityDbContext()
     {
     }
     
