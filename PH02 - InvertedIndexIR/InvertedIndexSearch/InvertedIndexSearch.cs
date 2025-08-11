@@ -23,11 +23,10 @@ public class InvertedIndexSearch : IInvertedIndexSearch
         {
             if (invertedIndex.WordDocMap.ContainsKey(words[i].ToUpper()))
             {
-                var list = new List<KeyValuePair<string, int>>(invertedIndex.WordDocMap[words[i].ToUpper()]);
-                for (int j = 0; j < list.Count; j++)
-                {
-                    list[j] = new KeyValuePair<string, int>(list[j].Key, list[j].Value - i);
-                } 
+                var list = invertedIndex.WordDocMap[words[i].ToUpper()]
+                    .Select(kvp => new KeyValuePair<string, int>(kvp.Key, kvp.Value - i))
+                    .ToList();
+
                 if(i == 0)
                     results.UnionWith(list);
                 else
