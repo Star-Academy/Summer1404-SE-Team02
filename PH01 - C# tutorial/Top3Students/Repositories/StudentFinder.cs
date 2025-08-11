@@ -1,14 +1,16 @@
-﻿namespace PH01___C__tutorial;
+﻿using PH01___C__tutorial.UniversityContexts;
+
+namespace PH01___C__tutorial;
 
 public class StudentFinder : IStudentFinder
 {
-    StudentContext _stContext;
-    public StudentFinder(StudentContext stcontex)
+    IStudentDbContext _studentContext;
+    public StudentFinder(IUniversityDbContextFactory dbContextFactory)
     {
-        _stContext = stcontex;
+        _studentContext = dbContextFactory.CreateStudentDbContext();
     }
     public Student FindStudentById(int studentId)
     {
-        return _stContext.Students.Find(studentId);
+        return _studentContext.Students.Find(studentId);
     }
 }

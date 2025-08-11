@@ -1,12 +1,19 @@
 ﻿using PH01___C__tutorial.DTO;
+using PH01___C__tutorial.UniversityContexts;
 
 namespace PH01___C__tutorial;
 
 public class AverageCalculator : IAverageCalculator
 {
-    public List<AverageDto> CalculateAverageTop3(StudentContext stContext)
+    private readonly IScoreDbContext _scoreDbContext;
+
+    public AverageCalculator(IUniversityDbContextFactory dbContextFactory)
     {
-        return stContext.Scores
+        _scoreDbContext = dbContextFactory.CreateScoreDbContext();
+    }
+    public List<AverageDto> CalculateAverageTop3()
+    {
+        return _scoreDbContext.Scores
             .GroupBy(item => item.StudentNumber)
             .Select(g => new AverageDto()
             {

@@ -2,10 +2,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PH01___C__tutorial.UniversityContexts;
 
-public class DbContextFactory : IUniversityDbContextFactory
+public class UniversityDbContextFactory : IUniversityDbContextFactory
 {
     private readonly IDbContextFactory<UniversityDbContext> _universityDbContextFactory;
-    public DbContextFactory(IDbContextFactory<UniversityDbContext> universityDbContextFactory)
+    public UniversityDbContextFactory(IDbContextFactory<UniversityDbContext> universityDbContextFactory)
     {
         _universityDbContextFactory = universityDbContextFactory ?? throw new ArgumentNullException(nameof(universityDbContextFactory));
     }

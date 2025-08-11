@@ -1,29 +1,39 @@
-﻿using System;
-using System.Text.Json;
-using System.IO;                
-using System.Collections.Generic; 
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using PH01___C__tutorial;
-using PH01___C__tutorial.DTO;
+using PH01___C__tutorial.UniversityContexts;
 
 class Program
 {
     static void Main(string[] args)
     {
-        using var stContext = new StudentContext();
-        var lessonAdder = new LessonAdder(stContext);
-        var scoreAdder = new ScoreAdder(stContext);
-        var studentAdder = new StudentAdder(stContext);
-        var averageByStudent = new AverageCalculator();
-        var studentFinder = new StudentFinder(stContext);
-        var top3Students = averageByStudent.CalculateAverageTop3(stContext);
-        
-        for (int i = 0; i < top3Students.Count; i++)
+        using var host = Host.CreateDefaultBuilder(args)
+            .ConfigureLogging(logging =>
+            {
+                logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+            })
+            .ConfigureServices((context, services) =>
+            {
+                services.AddDbContextFactory<UniversityDbContext>(options =>
+                {
+                    options.UseNpgsql("Host=127.0.0.1;Port=5432;Database=university;User Id=postgres;Password=myPassword;");
+                });
+                services.AddScoped<IUniversityDbContextFactory, UniversityDbContextFactory>();
+                services.AddScoped<IAverageCalculator, AverageCalculator>();
+                services.AddScoped<IStudentFinder, StudentFinder>();
+            })
+            .Build();
+        var averageByStudent = host.Services.GetRequiredService<IAverageCalculator>();
+        var studentFinder = host.Services.GetRequiredService<IStudentFinder>();
+
+        var top3Students = averageByStudent.CalculateAverageTop3();
+
+        foreach (var entry in top3Students)
         {
-            var entry = top3Students[i];
-            Console.WriteLine($"{studentFinder.FindStudentById(entry.StudentNumber).FirstName}" +
-                              $" {studentFinder.FindStudentById(entry.StudentNumber).LastName}:" +
-                              $" {entry.AverageScore:F5}");
+            var student = studentFinder.FindStudentById(entry.StudentNumber);
+            Console.WriteLine($"{student.FirstName} {student.LastName}: {entry.AverageScore:F5}");
         }
     }
 }

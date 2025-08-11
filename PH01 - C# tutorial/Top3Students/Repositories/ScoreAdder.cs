@@ -1,17 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using PH01___C__tutorial.UniversityContexts;
 
 namespace PH01___C__tutorial;
 
 public class ScoreAdder : IScoreAdder
 {
-    private StudentContext _stContext;
-    public ScoreAdder(StudentContext stContext)
+    private IScoreDbContext _scoreContext;
+    private ILessonDbContext _lessonContext;
+    public ScoreAdder(IUniversityDbContextFactory dbContextFactory)
     {
-        _stContext = stContext;
+        _scoreContext = dbContextFactory.CreateScoreDbContext();
+        _lessonContext = dbContextFactory.CreateLessonDbContext();
     }
     public void AddScores(List<ScoreItem> scoreItems)
     {
-        var lessonMap = _stContext.Lessons
+        var lessonMap = _lessonContext.Lessons
             .ToDictionary(l => l.LessonName, l => l.LessonId);
         
         var scores = scoreItems.Select(si => new Score
@@ -24,18 +27,17 @@ public class ScoreAdder : IScoreAdder
         {
             AddScore(score);
         }
-        _stContext.SaveChanges();
     }
 
     public void AddScore(Score score)
     {
-        bool exists = _stContext.Scores.Any(s =>
+        bool exists = _scoreContext.Scores.Any(s =>
             s.StudentNumber == score.StudentNumber &&
             s.LessonId == score.LessonId);
 
         if (!exists)
         {
-            _stContext.Scores.Add(score);
+            _scoreContext.Scores.Add(score);
         }
     }
 

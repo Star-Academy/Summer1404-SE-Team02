@@ -1,12 +1,14 @@
+using PH01___C__tutorial.UniversityContexts;
+
 namespace PH01___C__tutorial;
 
 public class StudentAdder : IStudentAdder
 {
-    private StudentContext _stContext;
+    private IStudentDbContext _stContext;
 
-    public StudentAdder(StudentContext stContext)
+    public StudentAdder(IUniversityDbContextFactory dbContextFactory)
     {
-        _stContext = stContext;
+        _stContext = dbContextFactory.CreateStudentDbContext();
     }
     
     public void AddStudents(List<Student> students)
@@ -15,7 +17,6 @@ public class StudentAdder : IStudentAdder
         {
             AddStudent(student);
         }
-        _stContext.SaveChanges();
     }
     public void AddStudent(Student student)
     {

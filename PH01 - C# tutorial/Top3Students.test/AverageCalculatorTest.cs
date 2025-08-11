@@ -6,13 +6,13 @@ using Xunit;
 
 public class AverageCalculatorTests
 {
-    private StudentContext GetInMemoryStudentContext()
+    private UniversityDbContext GetInMemoryStudentContext()
     {
-        var options = new DbContextOptionsBuilder<StudentContext>()
+        var options = new DbContextOptionsBuilder<UniversityDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDb")
             .Options;
 
-        var context = new StudentContext(options);
+        var context = new UniversityDbContext(options);
 
         var scores = new List<Score>
         {
