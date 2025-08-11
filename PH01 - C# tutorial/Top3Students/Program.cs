@@ -22,17 +22,17 @@ class Program
                 });
                 services.AddScoped<IUniversityDbContextFactory, UniversityDbContextFactory>();
                 services.AddScoped<IAverageCalculator, AverageCalculator>();
-                services.AddScoped<IStudentFinder, StudentFinder>();
+                services.AddScoped<IStudentRepository, StudentRepository>();
             })
             .Build();
         var averageByStudent = host.Services.GetRequiredService<IAverageCalculator>();
-        var studentFinder = host.Services.GetRequiredService<IStudentFinder>();
+        var studentRepository = host.Services.GetRequiredService<IStudentRepository>();
 
         var top3Students = averageByStudent.CalculateAverageTop3();
 
         foreach (var entry in top3Students)
         {
-            var student = studentFinder.FindStudentById(entry.StudentNumber);
+            var student = studentRepository.GetStudent(entry.StudentNumber);
             Console.WriteLine($"{student.FirstName} {student.LastName}: {entry.AverageScore:F5}");
         }
     }

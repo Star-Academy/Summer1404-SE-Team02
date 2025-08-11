@@ -1,18 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using NSubstitute;
 using PH01___C__tutorial;
+using PH01___C__tutorial.UniversityContexts;
 using Xunit;
 
 public class AverageCalculatorTests
 {
-    private UniversityDbContext GetInMemoryStudentContext()
+    private readonly IUniversityDbContextFactory _dbContextFactory;
+    private readonly IAverageCalculator _sut;
+    public AverageCalculatorTests()
+    {
+        _dbContextFactory = Substitute.For<IUniversityDbContextFactory>();
+        _sut = new AverageCalculator(_dbContextFactory);
+    }
+    private IScoreDbContext GetInMemoryStudentContext()
     {
         var options = new DbContextOptionsBuilder<UniversityDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDb")
             .Options;
-
-        var context = new UniversityDbContext(options);
+        
+        _dbContextFactory.CreateScoreDbContext().Returns(new UniversityDbContext(new DbContextOptionsBuilder<UniversityDbContext>()
+            .UseInMemoryDatabase(databaseName: "TestDb")
+            .Options));
+        
+        var context = _dbContextFactory.CreateScoreDbContext();
 
         var scores = new List<Score>
         {
@@ -44,10 +57,11 @@ public class AverageCalculatorTests
     {
         // Arrange
         var context = GetInMemoryStudentContext();
-        var calculator = new AverageCalculator();
+        _dbContextFactory.CreateScoreDbContext().Returns(context);
+        var calculator = new AverageCalculator(_dbContextFactory);
 
         // Act
-        var result = calculator.CalculateAverageTop3(context);
+        var result = calculator.CalculateAverageTop3();
 
         // Assert
         Assert.Equal(3, result.Count);

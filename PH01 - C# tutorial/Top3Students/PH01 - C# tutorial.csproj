@@ -16,6 +16,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0-preview.6.25358.103" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    <PackageReference Include="NSubstitute" Version="5.3.0" />
     <PackageReference Include="System.Composition.Hosting" Version="10.0.0-preview.6.25358.103" />
   </ItemGroup>
 
