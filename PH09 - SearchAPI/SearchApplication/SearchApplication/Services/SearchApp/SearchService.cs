@@ -4,6 +4,7 @@ using InvertedIndexIR.Filters;
 using InvertedIndexIR.InputParser;
 using InvertedIndexIR.InputParser.Abstraction;
 using InvertedIndexIR.InvertedIndexDocumentAdder;
+using InvertedIndexIR.InvertedIndexDocumentAdder.Abstraction;
 using InvertedIndexIR.InvertedIndexSearch;
 using InvertedIndexIR.QueryBuilder;
 using InvertedIndexIR.QueryBuilder.Abstraction;
@@ -21,37 +22,27 @@ public class SearchService :ISearchService
     private readonly IInputParser _parser;
     private readonly IQueryBuilder _queryBuilder;
 
-    public SearchService()
+    public SearchService(IExtendedSearch extendedSearch, IInputParser parser, IQueryBuilder queryBuilder,
+        IInvertedIndexDocumentAdder  invertedIndexDocumentAdder)
     {
-        var tokenizer = new BasicTokenizer();
-        var normalizer = new BasicNormalizer();
-        _parser = new InputParser();
+        _parser = parser;
+        _queryBuilder = queryBuilder;
+        _extendedSearch = extendedSearch;
         _index = new InvertedIndex();
-        _queryBuilder = new QueryBuilder();
-        var typesOfWordGetter = new QueryWordsOfTypeGetter();
-
-        var adder = new InvertedIndexDocumentAdder(tokenizer, normalizer);
         var filePaths = FileReader.ReadAllFileNames("./Search/EnglishData"); 
 
         foreach (var path in filePaths)
         {
             var content = File.ReadAllText(path);
-            adder.AddDocument(content, path, _index);
+            invertedIndexDocumentAdder.AddDocument(content, path, _index);
         }
         Console.WriteLine(filePaths.Length + "FILES FOUND");
         Console.WriteLine(Directory.GetCurrentDirectory() + " current directory");
-
-        var indexSearch = new InvertedIndexSearch(tokenizer, normalizer);
-
-        _extendedSearch = new ExtendedSearch();
-        _extendedSearch.AddFilter(new AtLeastOneFilter(indexSearch, typesOfWordGetter));
-        _extendedSearch.AddFilter(new NecessaryFilter(indexSearch, typesOfWordGetter));
-        _extendedSearch.AddFilter(new ExcludedFilter(indexSearch, typesOfWordGetter));
     }
 
     public IEnumerable<string> Search(string rawQuery)
     {
-        var parsedWords = _parser.ParseInput(rawQuery, @"[+-]?[\""].+?[\""]|\S+", new List<string> { "+", "-" });
+        var parsedWords = _parser.ParseInput(rawQuery, @"[+-]?[\""].+?[\""]|\S+");
         var query = _queryBuilder.BuildQuery(parsedWords, new List<string> { "+", "-" });
         return _extendedSearch.Search(query, _index);
     }

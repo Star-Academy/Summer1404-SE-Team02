@@ -6,9 +6,13 @@ namespace InvertedIndexIR.Search.Extended;
 
 public class ExtendedSearch : IExtendedSearch
 {
-    private List<IFilter> _filters = new List<IFilter>();
-    
+    private List<IFilter> _filters;
 
+    public ExtendedSearch(IEnumerable<IFilter> filters)
+    {
+        _filters = filters.ToList();
+    }
+    
     public IReadOnlyCollection<string> Search(Query query, InvertedIndex index)
     {
         var result = new HashSet<string>(index.DocumentNames);
@@ -17,10 +21,5 @@ public class ExtendedSearch : IExtendedSearch
             result.IntersectWith(filter.ApplyFilter(query, index));
         }
         return result;
-    }
-
-    public void AddFilter(IFilter filter)
-    {
-        _filters.Add(filter);
     }
 }

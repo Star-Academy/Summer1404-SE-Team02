@@ -7,5 +7,4 @@ namespace InvertedIndexIR.Search.Abstraction;
 public interface IExtendedSearch
 {
     public IReadOnlyCollection<string> Search(Query query, InvertedIndex index);
-    public void AddFilter(IFilter filter);
 }

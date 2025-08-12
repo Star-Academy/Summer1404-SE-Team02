@@ -23,10 +23,9 @@ namespace InvertedIndexTests
             // Arrange
             string input = "+cat -dog fish";
             string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
-            var notations = new List<string> { "+", "-"};
 
             // Act
-            var result = _sut.ParseInput(input, pattern, notations);
+            var result = _sut.ParseInput(input, pattern);
 
             // Assert
             result.Should().BeEquivalentTo(new List<string> {"+CAT", "-DOG", "FISH"});
@@ -39,10 +38,9 @@ namespace InvertedIndexTests
             // Arrange
             string input = "apple \"banana is good\" -orange";
             string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
-            var notations = new List<string> { "+", "-"};
 
             // Act
-            var result = _sut.ParseInput(input, pattern, notations);
+            var result = _sut.ParseInput(input, pattern);
 
             // Assert
             result.Should().BeEquivalentTo(new List<string> { "APPLE", "BANANA IS GOOD", "-ORANGE" });
@@ -55,10 +53,9 @@ namespace InvertedIndexTests
             // Arrange
             string input = "+\"cat\" -\"dog\" \"something\"";
             string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
-            var notations = new List<string> { "+", "-" };
 
             // Act
-            var result = _sut.ParseInput(input, pattern, notations);
+            var result = _sut.ParseInput(input, pattern);
 
             // Assert
             result.Should().BeEquivalentTo(new List<string> { "+CAT", "-DOG", "SOMETHING" });
@@ -71,10 +68,9 @@ namespace InvertedIndexTests
             // Arrange
             string input = "";
             string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
-            var notations = new List<string> { "+", "-" };
 
             // Act
-            var result = _sut.ParseInput(input, pattern, notations);
+            var result = _sut.ParseInput(input, pattern);
 
             // Assert
             result.Should().BeEmpty();

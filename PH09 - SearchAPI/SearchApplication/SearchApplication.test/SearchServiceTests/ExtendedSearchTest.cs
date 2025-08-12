@@ -19,9 +19,9 @@ namespace ExtendedSearchTests
 
         public ExtendedSearchTests()
         {
-            _sut = new ExtendedSearch();
             _filter1 = NSubstitute.Substitute.For<IFilter>();
             _filter2 = NSubstitute.Substitute.For<IFilter>();
+            _sut = new ExtendedSearch(new List<IFilter>{_filter1, _filter2});
         }
         
         [Fact]
@@ -38,9 +38,6 @@ namespace ExtendedSearchTests
             _filter2.ApplyFilter(Arg.Any<Query>(), Arg.Any<InvertedIndex>())
                 .Returns(new List<string> { "doc2", "doc3" });
             
-            _sut.AddFilter(_filter1);
-            _sut.AddFilter(_filter2);
-            
             // Act
             var result = _sut.Search(query, index);
 
@@ -52,11 +49,12 @@ namespace ExtendedSearchTests
         public void Search_WithNoFilters_Returns_AllDocuments()
         {
             // Arrange 
+            var sut2 = new ExtendedSearch(new List<IFilter>());
             var index = new InvertedIndex();
             var query = new Query();
             index.DocumentNames = new HashSet<string>() { "doc1", "doc2" };
             // Act
-            var result = _sut.Search(query, index).ToList();
+            var result = sut2.Search(query, index).ToList();
             // Assert
             result.Should().HaveCount(2).And.Contain(new[] { "doc1", "doc2" });
         }
