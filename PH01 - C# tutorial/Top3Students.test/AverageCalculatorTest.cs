@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using NSubstitute;
 using PH01___C__tutorial;
 using PH01___C__tutorial.UniversityContexts;
@@ -21,11 +22,7 @@ public class AverageCalculatorTests
             .UseInMemoryDatabase(databaseName: "TestDb")
             .Options;
         
-        _dbContextFactory.CreateScoreDbContext().Returns(new UniversityDbContext(new DbContextOptionsBuilder<UniversityDbContext>()
-            .UseInMemoryDatabase(databaseName: "TestDb")
-            .Options));
-        
-        var context = _dbContextFactory.CreateScoreDbContext();
+       var context = new UniversityDbContext(options);
 
         var scores = new List<Score>
         {
@@ -56,18 +53,14 @@ public class AverageCalculatorTests
     public void CalculateAverageTop3_Returns_Top3StudentsByAverageScore()
     {
         // Arrange
-        var context = GetInMemoryStudentContext();
-        _dbContextFactory.CreateScoreDbContext().Returns(context);
-        var calculator = new AverageCalculator(_dbContextFactory);
+        _dbContextFactory.CreateScoreDbContext().Returns(GetInMemoryStudentContext());
 
         // Act
-        var result = calculator.CalculateAverageTop3();
+        var result = _sut.CalculateAverageTop3();
 
         // Assert
-        Assert.Equal(3, result.Count);
-
-        Assert.Equal(4, result[0].StudentNumber);
-        Assert.Equal(2, result[1].StudentNumber);
-        Assert.Equal(1, result[2].StudentNumber);
+        result.Should().HaveCount(3);
+        result.Select(r => r.StudentNumber).Should().Equal(4, 2, 1);
+        result.Select(r => r.AverageScore).Should().Equal(100.0, 90.0, 80.0);
     }
 }

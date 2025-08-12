@@ -5,15 +5,15 @@ namespace PH01___C__tutorial;
 
 public class AverageCalculator : IAverageCalculator
 {
-    private readonly IScoreDbContext _scoreDbContext;
+    private readonly IUniversityDbContextFactory _dbContextFactory;
 
     public AverageCalculator(IUniversityDbContextFactory dbContextFactory)
     {
-        _scoreDbContext = dbContextFactory.CreateScoreDbContext();
+        _dbContextFactory = dbContextFactory;
     }
     public List<AverageDto> CalculateAverageTop3()
     {
-        return _scoreDbContext.Scores
+        return _dbContextFactory.CreateScoreDbContext().Scores
             .GroupBy(item => item.StudentNumber)
             .Select(g => new AverageDto()
             {
