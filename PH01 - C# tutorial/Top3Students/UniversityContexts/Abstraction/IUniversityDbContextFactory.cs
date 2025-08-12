@@ -7,5 +7,4 @@ public interface IUniversityDbContextFactory
     IStudentDbContext CreateStudentDbContext();
     ILessonDbContext CreateLessonDbContext();
     IScoreDbContext CreateScoreDbContext();
-    // ICommonDbContext CreateCommonDbContext();
 }

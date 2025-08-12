@@ -25,8 +25,4 @@ public class UniversityDbContextFactory : IUniversityDbContextFactory
         return _universityDbContextFactory.CreateDbContext();
     }
 
-    public ICommonDbContext CreateCommonDbContext()
-    {
-        return _universityDbContextFactory.CreateDbContext();
-    }
 }
