@@ -7,7 +7,7 @@ namespace InvertedIndexIR.InputParser;
 
 public class InputParser : IInputParser
 {
-    public List<string> ParseInput(string input, string pattern, List<string> notations)
+    public List<string> ParseInput(string input, string pattern)
     {
         var matches = Regex.Matches(
             input.ToUpper(),
