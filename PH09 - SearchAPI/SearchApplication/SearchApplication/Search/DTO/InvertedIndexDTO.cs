@@ -1,5 +1,8 @@
 using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
+
+[ExcludeFromCodeCoverage]
 
 public class InvertedIndex 
 {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using InvertedIndexIR.DTO;
 using InvertedIndexIR.Filters;
 using InvertedIndexIR.InputParser;
@@ -14,6 +15,8 @@ using InvertedIndexIR.Search.Extended;
 using SearchApp.Abstraction;
 
 namespace SearchApp;
+[ExcludeFromCodeCoverage]
+
 
 public class SearchService :ISearchService
 {
