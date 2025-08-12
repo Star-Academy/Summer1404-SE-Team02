@@ -1,15 +1,18 @@
-
 using System;
 using FluentAssertions;
-using InvertedIndexWebApi.Tokenizer;
 using Xunit;
-using Moq;
-
 
 namespace TokenizerTests
 {
   public class TokenizerTest
   {
+      private readonly ITokenizer _sut;
+
+      public TokenizerTest()
+      {
+          _sut = new BasicTokenizer();
+      }
+      
         [Theory]
         [InlineData("THSS A WRONG TEST", new[] {"THSS", "A", "WRONG", "TEST"})]
         [InlineData(" ", new string[0])]
@@ -19,10 +22,9 @@ namespace TokenizerTests
     public void ValidateTokenizer(string input, string[] expectedResult)
         {
             //Arrange
-            var tokenizer = new BasicTokenizer();
 
             //Act
-            string[] tokenized = tokenizer.Tokenize(input);
+            string[] tokenized = _sut.Tokenize(input);
 
             //Assert
             tokenized.Should().BeEquivalentTo(expectedResult);

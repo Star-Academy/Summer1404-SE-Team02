@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using InvertedIndexWebApi.Normalizer;
 using Xunit;
-using Moq;
 
 
 namespace NormalizerTests
 {
   public class NormalizerTest
   {
+      private readonly INormalizer _sut;
+
+      public NormalizerTest()
+      {
+          _sut = new BasicNormalizer();
+      }
+      
         [Theory]
         [InlineData("Th!s!s A Wr#ong Test.", "THSS A WRONG TEST")]
         [InlineData(" ", " ")]
@@ -20,10 +25,9 @@ namespace NormalizerTests
     public void ValidateNormalizer(string input, string expectedResult)
         {
             //Arrange
-            var normalizer = new BasicNormalizer();
 
             //Act
-            string normalized = normalizer.Normalize(input);
+            string normalized = _sut.Normalize(input);
 
             //Assert
             normalized.Should().Be(expectedResult);

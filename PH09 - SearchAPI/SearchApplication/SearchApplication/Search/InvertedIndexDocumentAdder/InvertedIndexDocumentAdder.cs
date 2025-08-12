@@ -3,35 +3,34 @@ using System.Collections;
 using System.Dynamic;
 using System.IO;
 using System.Text.RegularExpressions;
+using InvertedIndexIR.InvertedIndexDocumentAdder.Abstraction;
 
-namespace InvertedIndexWebApi.InvertedIndexDocumentAdder;
-using InvertedIndexWebApi.InvertedIndexDTO;
-using InvertedIndexWebApi.Normalizer;
-using InvertedIndexWebApi.Tokenizer;
+namespace InvertedIndexIR.InvertedIndexDocumentAdder;
 
 public class InvertedIndexDocumentAdder : IInvertedIndexDocumentAdder
 {
-    private ITokenizer tokenizer;
-    private INormalizer normalizer;
-    
+    private readonly ITokenizer _tokenizer;
+    private readonly INormalizer _normalizer;
     public InvertedIndexDocumentAdder(ITokenizer tokenizer, INormalizer normalizer)
     {
-        this.tokenizer = tokenizer;
-        this.normalizer = normalizer;
+        if (tokenizer == null) throw new ArgumentNullException(nameof(tokenizer));
+        if (normalizer == null) throw new ArgumentNullException(nameof(normalizer));
+        this._tokenizer = tokenizer;
+        this._normalizer = normalizer;
     }
     public void AddDocument(string txt, string address, InvertedIndex invertedIndex)
     {
-        var normalizedText = normalizer.Normalize(txt);
-        var words = tokenizer.Tokenize(normalizedText);
-        invertedIndex.documentNames.Add(address);
+        var normalizedText = _normalizer.Normalize(txt);
+        var words = _tokenizer.Tokenize(normalizedText);
+        invertedIndex.DocumentNames.Add(address);
 
         for (int i = 0; i < words.Length; i++)
         {
-            if (!invertedIndex.invertedIndex.ContainsKey(words[i]))
+            if (!invertedIndex.WordDocMap.ContainsKey(words[i]))
             {
-                invertedIndex.invertedIndex.Add(words[i], new List<KeyValuePair<string, int>>());
+                invertedIndex.WordDocMap.Add(words[i], new List<KeyValuePair<string, int>>());
             }
-            invertedIndex.invertedIndex[words[i]].Add(new KeyValuePair<string, int>(address, i));
+            invertedIndex.WordDocMap[words[i]].Add(new KeyValuePair<string, int>(address, i));
         }
     }
 }

@@ -1,8 +1,10 @@
-namespace InvertedIndexWebApi.Filters;
-using InvertedIndexWebApi.InvertedIndexDTO;
-using InvertedIndexWebApi.Query;
+using System.Collections.Generic;
+using InvertedIndexIR.DTO;
+using InvertedIndexIR.QueryGetWordsOfType;
+using InvertedIndexIR.QueryGetWordsOfType.Abstraction;
 
+namespace InvertedIndexIR.Filters.Abstraction;
 public interface IFilter
 {
-    public IEnumerable<string> ApplyFilter(IQuery query, InvertedIndex invertedIndex);
+    public IReadOnlyCollection<string> ApplyFilter(Query query, InvertedIndex invertedIndex);
 }

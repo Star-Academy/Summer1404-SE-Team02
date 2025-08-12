@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SearchApplication;
+using SearchApp;
+using SearchApp.Abstraction;
 
 namespace WebApplication1.Controllers
 {

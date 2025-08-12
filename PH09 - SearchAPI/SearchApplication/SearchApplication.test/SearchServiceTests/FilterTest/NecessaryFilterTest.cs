@@ -2,35 +2,48 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using InvertedIndexWebApi.Filters;
-using InvertedIndexWebApi.InvertedIndexDocumentSearch;
-using InvertedIndexWebApi.InvertedIndexDTO;
-using InvertedIndexWebApi.Query;
+using InvertedIndexIR.DTO;
+using InvertedIndexIR.Filters;
+using InvertedIndexIR.Filters.Abstraction;
+using InvertedIndexIR.InvertedIndexSearch.Abstracion;
+using InvertedIndexIR.QueryGetWordsOfType.Abstraction;
+using NSubstitute;
 using Xunit;
-using Moq;
-
 
 namespace FilterTest
 {
     public class NecessaryFilterTests
     {
+        private readonly IInvertedIndexSearch _indexSearch;
+        private readonly IQueryWordsOfTypeGetter _queryWordsOfTypeGetter;
+        private readonly IFilter _sut;
+
+        public NecessaryFilterTests()
+        {
+            _indexSearch = NSubstitute.Substitute.For<IInvertedIndexSearch>();
+            _queryWordsOfTypeGetter = NSubstitute.Substitute.For<IQueryWordsOfTypeGetter>();
+            _sut = new NecessaryFilter(_indexSearch, _queryWordsOfTypeGetter);
+        }
+        
         [Fact]
         public void ApplyFilter_WithNecessaryWords_ReturnsIntersectionOfMatchingDocs()
         {
             // Arrange
-            var mockQuery = new Mock<IQuery>();
-            var mockIndexSearch = new Mock<IInvertedIndexSearch>();
-            var filter = new NecessaryFilter(mockIndexSearch.Object);
+            var query = new Query();
             var index = new InvertedIndex();
-            index.documentNames = new HashSet<string> { "doc1", "doc2", "doc3", "doc4" };
+            index.DocumentNames = new HashSet<string> { "doc1", "doc2", "doc3", "doc4" };
 
-            mockQuery.Setup(q => q.GetWordsOfType("")).Returns(new List<string> { "apple", "banana" });
+            _queryWordsOfTypeGetter.GetWordsOfType(query, "")
+                .Returns(new List<string>{"apple", "banana"});
+            
+            _indexSearch.Search("apple", Arg.Any<InvertedIndex>())
+                .Returns(new List<string> { "doc1", "doc2" });
 
-            mockIndexSearch.Setup(i => i.Search("apple", index)).Returns(new List<string> { "doc1", "doc2" });
-            mockIndexSearch.Setup(i => i.Search("banana", index)).Returns(new List<string> { "doc2", "doc3" });
+            _indexSearch.Search("banana", Arg.Any<InvertedIndex>())
+                .Returns(new List<string> { "doc2", "doc3" });
 
             // Act
-            var result = filter.ApplyFilter(mockQuery.Object, index);
+            var result = _sut.ApplyFilter(query, index);
 
             // Assert
             result.Should().ContainSingle().And.Contain(new HashSet<string> { "doc2" });
@@ -41,16 +54,15 @@ namespace FilterTest
         public void ApplyFilter_WithNoNecessaryWords_ReturnsAllDocuments()
         {
             // Arrange
-            var mockQuery = new Mock<IQuery>();
-            var mockIndexSearch = new Mock<IInvertedIndexSearch>();
-            var filter = new NecessaryFilter(mockIndexSearch.Object);
+            var query = new Query();
             var index = new InvertedIndex();
-            index.documentNames = new HashSet<string> { "docA", "docB" };
+            index.DocumentNames = new HashSet<string> { "docA", "docB" };
 
-            mockQuery.Setup(q => q.GetWordsOfType("")).Returns(new List<string>());
+            _queryWordsOfTypeGetter.GetWordsOfType(query, "")
+                .Returns(new List<string>());
 
             // Act
-            var result = filter.ApplyFilter(mockQuery.Object, index);
+            var result = _sut.ApplyFilter(query, index);
 
             // Assert
             result.Should().HaveCount(2).And.Contain(new List<string> { "docA", "docB" });

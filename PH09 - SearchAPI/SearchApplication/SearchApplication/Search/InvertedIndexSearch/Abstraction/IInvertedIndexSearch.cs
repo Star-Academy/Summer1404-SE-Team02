@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-namespace InvertedIndexWebApi.InvertedIndexDocumentSearch;
-using InvertedIndexWebApi.InvertedIndexDTO;
-
+namespace InvertedIndexIR.InvertedIndexSearch.Abstracion;
 public interface IInvertedIndexSearch
 {
-    public IEnumerable<string> Search(string word, InvertedIndex invertedIndex);
+    public IReadOnlyCollection<string> Search(string word, InvertedIndex invertedIndex);
 }

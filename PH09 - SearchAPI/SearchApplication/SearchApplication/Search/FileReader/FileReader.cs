@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
-namespace InvertedIndexWebApi.FileReader;
-
 [ExcludeFromCodeCoverage]
 public class FileReader
 {

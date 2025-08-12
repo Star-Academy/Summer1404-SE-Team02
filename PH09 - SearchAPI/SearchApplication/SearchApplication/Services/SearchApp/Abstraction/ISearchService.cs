@@ -1,4 +1,4 @@
-﻿namespace SearchApplication;
+﻿namespace SearchApp.Abstraction;
 
 public interface ISearchService
 {

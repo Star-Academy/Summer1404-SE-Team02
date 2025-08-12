@@ -1,8 +1,8 @@
 using FluentAssertions;
 using WebApplication1.Controllers;
 using Moq;
-using InvertedIndexWebApi.Normalizer;
 using Microsoft.AspNetCore.Mvc;
+using SearchApp.Abstraction;
 
 namespace SearchApplication.test
 {

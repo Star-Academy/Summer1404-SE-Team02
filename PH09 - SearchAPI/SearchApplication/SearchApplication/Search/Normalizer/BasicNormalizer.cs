@@ -1,4 +1,3 @@
-namespace InvertedIndexWebApi.Normalizer;
 using System.Text.RegularExpressions;
 
 public class BasicNormalizer : INormalizer
