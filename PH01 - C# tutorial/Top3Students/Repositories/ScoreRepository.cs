@@ -12,7 +12,7 @@ public class ScoreRepository : IScoreRepository
     }
     public void AddScores(List<ScoreItem> scoreItems)
     {
-        var _uniLessonContext = _universityDbContextFactory.CreateLessonDbContext();
+        using var _uniLessonContext = _universityDbContextFactory.CreateLessonDbContext();
         var lessonMap = _uniLessonContext.Lessons
             .ToDictionary(l => l.LessonName, l => l.LessonId);
         
