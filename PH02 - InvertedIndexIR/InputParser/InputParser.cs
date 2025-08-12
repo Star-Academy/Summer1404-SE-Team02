@@ -7,11 +7,6 @@ namespace InvertedIndexIR.InputParser;
 
 public class InputParser : IInputParser
 {
-    // private readonly IQueryBuilder _queryBuilder;
-    // public InputParser(IQueryBuilder builder)
-    // {
-    //     _queryBuilder = builder;
-    // }
     public List<string> ParseInput(string input, string pattern, List<string> notations)
     {
         var matches = Regex.Matches(
