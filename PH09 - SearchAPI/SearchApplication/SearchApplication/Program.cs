@@ -15,6 +15,9 @@ using SearchApp.Abstraction;
 using InvertedIndexIR.QueryGetWordsOfType.Abstraction;
 using InvertedIndexIR.Search.Abstraction;
 using InvertedIndexIR.Search.Extended;
+using OpenTelemetry.Trace;
+using Prometheus;
+using SearchApplication.ActivityResources;
 
 [ExcludeFromCodeCoverage]
 class Program
@@ -43,9 +46,25 @@ class Program
         builder.Services.AddSingleton<IFilter, ExcludedFilter>();
 
         builder.Services.AddSingleton<ISearchService, SearchService>();
+        builder.Services.AddSingleton<Instrumentation>();
+        
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(tracerProviderBuilder =>
+            {
+                tracerProviderBuilder
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddSource("SearchActivity")
+                    .AddJaegerExporter(o =>
+                    {
+                        o.AgentHost = "localhost";
+                        o.AgentPort = 6831;
+                    });
+            });
 
         var app = builder.Build();
-
+        app.UseMetricServer(9184);
+        app.UseHttpMetrics(); 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {

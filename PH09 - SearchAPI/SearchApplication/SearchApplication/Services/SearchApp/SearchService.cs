@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using InvertedIndexIR.DTO;
 using InvertedIndexIR.Filters;
@@ -13,6 +14,7 @@ using InvertedIndexIR.QueryGetWordsOfType;
 using InvertedIndexIR.Search.Abstraction;
 using InvertedIndexIR.Search.Extended;
 using SearchApp.Abstraction;
+using SearchApplication.ActivityResources;
 
 namespace SearchApp;
 [ExcludeFromCodeCoverage]
@@ -24,14 +26,16 @@ public class SearchService :ISearchService
     private readonly IExtendedSearch _extendedSearch;
     private readonly IInputParser _parser;
     private readonly IQueryBuilder _queryBuilder;
+    private Instrumentation _instrumentation;
 
     public SearchService(IExtendedSearch extendedSearch, IInputParser parser, IQueryBuilder queryBuilder,
-        IInvertedIndexDocumentAdder  invertedIndexDocumentAdder)
+        IInvertedIndexDocumentAdder  invertedIndexDocumentAdder, Instrumentation instrumentation)
     {
         _parser = parser;
         _queryBuilder = queryBuilder;
         _extendedSearch = extendedSearch;
         _index = new InvertedIndex();
+        _instrumentation = instrumentation;
         var filePaths = FileReader.ReadAllFileNames("./Search/EnglishData"); 
 
         foreach (var path in filePaths)
@@ -45,8 +49,20 @@ public class SearchService :ISearchService
 
     public IEnumerable<string> Search(string rawQuery)
     {
+        using var activity = _instrumentation.ActivitySource.StartActivity("SearchService.Search");
+        activity?.SetTag("query.raw", rawQuery);
+        activity?.SetTag("query.length", rawQuery.Length);
+
         var parsedWords = _parser.ParseInput(rawQuery, @"[+-]?[\""].+?[\""]|\S+");
+        activity?.AddEvent(new ActivityEvent("ParsedWords", 
+            tags: new ActivityTagsCollection { { "parsed.count", parsedWords.Count } }));
+
         var query = _queryBuilder.BuildQuery(parsedWords, new List<string> { "+", "-" });
-        return _extendedSearch.Search(query, _index);
+        activity?.AddEvent(new ActivityEvent("BuiltQuery"));
+
+        var results = _extendedSearch.Search(query, _index);
+        activity?.SetTag("results.count", results.Count());
+
+        return results;
     }
 }

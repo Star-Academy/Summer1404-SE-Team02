@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SearchApp;
 using SearchApp.Abstraction;
+using SearchApplication.ActivityResources;
 
 namespace WebApplication1.Controllers
 {
@@ -12,10 +14,12 @@ namespace WebApplication1.Controllers
     public class SearchController : ControllerBase
     {
         private readonly ISearchService _searchService;
+        private ActivitySource activitySource;
 
-        public SearchController(ISearchService searchService)
+        public SearchController(ISearchService searchService, Instrumentation instrumentation)
         {
             _searchService = searchService;
+            activitySource = instrumentation.ActivitySource;
         }
 
         [HttpGet]
@@ -24,7 +28,17 @@ namespace WebApplication1.Controllers
             if (string.IsNullOrWhiteSpace(query))
                 return BadRequest("Query is required");
 
+            using var activity = activitySource.StartActivity("SearchController.Search");
+            activity?.SetTag("query.raw", query);
+            activity?.SetTag("query.length", query.Length);
+
+            var stopwatch = Stopwatch.StartNew();
             var results = _searchService.Search(query);
+            stopwatch.Stop();
+
+            activity?.SetTag("results.count", results.Count());
+            activity?.SetTag("search.duration.ms", stopwatch.ElapsedMilliseconds);
+
             return Ok(results);
         }
     }
