@@ -1,133 +1,68 @@
-
-using System;
+using System.Collections.Generic;
 using Xunit;
+// using InvertedIndexIR.InputParser;
+using ParseInput;
 
 namespace QueryTests
 {
-  public class QueryTest
-  {
-    public static IEnumerable<object[]> ParseInputTestData1 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none -fine",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" },
-                      new List<string> { "FINE" },
-                      new List<string> { "GET", "SICK", "HOME"}
-                  }
-              }
-          };
-
-    public static IEnumerable<object[]> ParseInputTestData2 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none + -fine",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" },
-                      new List<string> { "FINE" },
-                      new List<string> { "GET", "SICK", "HOME"}
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData4 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none +-fine",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" },
-                      new List<string> { },
-                      new List<string> { "GET", "SICK", "HOME"}
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData3 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none ",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" },
-                      new List<string> {  },
-                      new List<string> { "GET", "SICK", "HOME"}
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData5 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none ",
-                  new[] { "+" },
-                  new List<List<string>>
-                  {
-                      new List<string> { "MINE", "YOURS", "NONE" }
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData6 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "",
-                  new[] { "+", "-", "" },
-                  new List<List<string>>
-                  {
-                      new List<string> { },
-                      new List<string> { },
-                      new List<string> { }
-                  }
-              }
-          };
-    public static IEnumerable<object[]> ParseInputTestData7 =>
-          new List<object[]>
-          {
-              new object[]
-              {
-                  "get sick home +mine +yours +none -fine",
-                  new string[0],
-                  new List<List<string>>{}
-              }
-          };
-    [Theory]
-    [MemberData(nameof(ParseInputTestData1))]
-    //[MemberData(nameof(ParseInputTestData2))]
-    [MemberData(nameof(ParseInputTestData3))]
-    //[MemberData(nameof(ParseInputTestData4))]
-    [MemberData(nameof(ParseInputTestData5))]
-    [MemberData(nameof(ParseInputTestData6))]
-    [MemberData(nameof(ParseInputTestData7))]
-    public void ValidateParseInput(string input, string[] notations, List<List<string>> expectedResult)
+    public class QueryTests
     {
-      //Arrange
-      var query = new Query();
+        [Fact]
+        public void GetWordsOfType_ReturnsCorrectWords_ForExistingKey()
+        {
+            // Arrange
+            var parsedWords = new Dictionary<string, List<string>>
+            {
+                { "+", new List<string> { "cat", "dog" } },
+                { "-", new List<string> { "mouse", "rat" } }
+            };
+            var query = new Query(parsedWords);
 
-      //Act
-      var parseResult = new List<List<string>> { };
-      query.ParseInput(input);
-      foreach (string notation in notations)
-      {
-        parseResult.Add(query.getWordsOfType(notation));
-      }
+            // Act
+            var result = query.GetWordsOfType("+");
 
-      //Assert
-      Assert.Equal(expectedResult, parseResult);
+            // Assert
+            Assert.Equal(new List<string> { "cat", "dog" }, result);
+        }
+
+        [Fact]
+        public void GetWordsOfType_ReturnsEmptyList_ForNonExistingKey()
+        {
+            // Arrange
+            var parsedWords = new Dictionary<string, List<string>>
+            {
+                { "+", new List<string> { "cat", "dog" } }
+            };
+            var query = new Query(parsedWords);
+
+            // Act
+            var result = query.GetWordsOfType("-");
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void GetWordsOfType_ReturnsCorrectWords_ForMultipleKeys()
+        {
+            // Arrange
+            var parsedWords = new Dictionary<string, List<string>>
+            {
+                { "+", new List<string> { "apple" } },
+                { "-", new List<string> { "banana", "orange" } },
+                { "", new List<string> { "grape" } }
+            };
+            var query = new Query(parsedWords);
+
+            // Act
+            var andWords = query.GetWordsOfType("+");
+            var orWords = query.GetWordsOfType("-");
+            var notWords = query.GetWordsOfType("");
+
+            // Assert
+            Assert.Single(andWords);
+            Assert.Equal(2, orWords.Count);
+            Assert.Contains("grape", notWords);
+        }
     }
-  }
 }

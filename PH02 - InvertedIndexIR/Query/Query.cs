@@ -1,40 +1,22 @@
 using System.Collections.Generic;
+// using InvertedIndexIR.InputParser;
+using ParseInput;
 
 public class Query : IQuery
 {
-    private Dictionary<string, LinkedList<string>> wordsByType = new Dictionary<string, LinkedList<string>>
-    {
-        { "+", new LinkedList<string>() }, // Optional words
-        { "-", new LinkedList<string>() }, // Forbidden words
-        { "", new LinkedList<string>() }    // Required words
-    };
-    
-    public void ParseInput(string input)
-    {
-        foreach (var list in wordsByType.Values)
-        {
-            list.Clear();
-        }
+    private readonly Dictionary<string, List<string>> _parsedWords;
 
-        var tokens = input.ToUpper().Split(' ', System.StringSplitOptions.RemoveEmptyEntries);
-
-        foreach (var token in tokens)
-        {
-            if (token.StartsWith("+"))
-                wordsByType["+"].AddLast(token[1..]);
-            else if (token.StartsWith("-"))
-                wordsByType["-"].AddLast(token[1..]);
-            else
-                wordsByType[""].AddLast(token);
-        }
+    public Query(Dictionary<string, List<string>> parsedWords)
+    {
+        _parsedWords = parsedWords;
     }
 
-    public List<string> getWordsOfType(string notation)
+    public List<string> GetWordsOfType(string notation)
     {
-        if (!wordsByType.ContainsKey(notation))
+        if (_parsedWords.ContainsKey(notation))
         {
-            return new List<string>();
+            return _parsedWords[notation];
         }
-        return new List<string>(wordsByType[notation]);
+        return new List<string>();
     }
 }

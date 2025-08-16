@@ -1,12 +1,18 @@
 public class NecessaryFilter : IFilter
 {
-    public IEnumerable<string> ApplyFilter(IQuery query, IInvertedIndex invertedIndex)
+    private readonly IInvertedIndexSearch _indexSearch;
+
+    public NecessaryFilter(IInvertedIndexSearch indexSearch)
     {
-        List<string> words = query.getWordsOfType("");
-        HashSet<string> result = invertedIndex.GetDocumentNames().ToHashSet();
+        _indexSearch = indexSearch;
+    }
+    public IEnumerable<string> ApplyFilter(IQuery query, InvertedIndex invertedIndex)
+    {
+        var words = query.GetWordsOfType("");
+        var result = invertedIndex.documentNames;
         foreach (var word in words)
         {
-            var docs = new HashSet<string>(invertedIndex.Search(word));
+            var docs = new HashSet<string>(_indexSearch.Search(word, invertedIndex));
             result.IntersectWith(docs);
         }
         return result;

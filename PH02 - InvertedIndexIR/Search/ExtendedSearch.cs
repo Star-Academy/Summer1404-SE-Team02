@@ -1,19 +1,14 @@
-public class ExtendedSearch : ISearch
+public class ExtendedSearch : IExtendedSearch
 {
-    private readonly IInvertedIndex _inverted_index;
     private List<IFilter> _filters = new List<IFilter>();
+    
 
-    public ExtendedSearch(IInvertedIndex invertedIndex)
+    public IEnumerable<string> Search(IQuery query, InvertedIndex index)
     {
-        _inverted_index = invertedIndex;
-    }
-
-    public IEnumerable<string> Search(IQuery query)
-    {
-        var result = new HashSet<string>(_inverted_index.GetDocumentNames());
-        foreach (IFilter filter in _filters)
+        var result = new HashSet<string>(index.documentNames);
+        foreach (var filter in _filters)
         {
-            result.IntersectWith(filter.ApplyFilter(query, _inverted_index));
+            result.IntersectWith(filter.ApplyFilter(query, index));
         }
         return result;
     }

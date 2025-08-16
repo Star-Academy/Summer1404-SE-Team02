@@ -11,16 +11,20 @@ namespace FilterTest
         {
             // Arrange
             var mockQuery = new Mock<IQuery>();
-            var mockIndex = new Mock<IInvertedIndex>();
-            var filter = new AtLeastOneFilter();
+            var mockIndexSearch = new Mock<IInvertedIndexSearch>();
+            var filter = new AtLeastOneFilter(mockIndexSearch.Object);
+            var index = new InvertedIndex();
+            index.documentNames = new HashSet<string> { "doc1", "doc2", "doc3", "doc4" };
 
-            mockQuery.Setup(q => q.getWordsOfType("+")).Returns(new List<string> { "apple", "banana" });
+            mockQuery.Setup(q => q.GetWordsOfType("+")).Returns(new List<string> { "apple", "banana" });
 
-            mockIndex.Setup(i => i.Search("apple")).Returns(new List<string> { "doc1", "doc2" });
-            mockIndex.Setup(i => i.Search("banana")).Returns(new List<string> { "doc2", "doc3" });
+            mockIndexSearch.Setup(i => i.Search("apple", It.IsAny<InvertedIndex>()))
+                .Returns(new List<string> { "doc1", "doc2" });
+            mockIndexSearch.Setup(i => i.Search("banana", It.IsAny<InvertedIndex>()))
+                .Returns(new List<string> { "doc2", "doc3" });
 
             // Act
-            var result = filter.ApplyFilter(mockQuery.Object, mockIndex.Object);
+            var result = filter.ApplyFilter(mockQuery.Object, index);
 
             // Assert
             var expected = new HashSet<string> { "doc1", "doc2", "doc3" };
@@ -32,15 +36,14 @@ namespace FilterTest
         {
             // Arrange
             var mockQuery = new Mock<IQuery>();
-            var mockIndex = new Mock<IInvertedIndex>();
-            var filter = new AtLeastOneFilter();
-
-            mockQuery.Setup(q => q.getWordsOfType("+")).Returns(new List<string>());
-
-            mockIndex.Setup(i => i.GetDocumentNames()).Returns(new List<string> { "docA", "docB" });
-
+            var mockIndexSearch = new Mock<IInvertedIndexSearch>();
+            var filter = new AtLeastOneFilter(mockIndexSearch.Object);
+            var index = new InvertedIndex();
+            index.documentNames = new HashSet<string> { "docA", "docB" };
+            mockQuery.Setup(q => q.GetWordsOfType("+")).Returns(new List<string>());
+            
             // Act
-            var result = filter.ApplyFilter(mockQuery.Object, mockIndex.Object);
+            var result = filter.ApplyFilter(mockQuery.Object, index);
 
             // Assert
             Assert.Equal(new List<string> { "docA", "docB" }, result);
