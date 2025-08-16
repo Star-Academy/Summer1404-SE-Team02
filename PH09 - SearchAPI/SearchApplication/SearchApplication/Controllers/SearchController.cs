@@ -25,6 +25,7 @@ namespace WebApplication1.Controllers
         [HttpGet]
         public IActionResult Search([FromQuery] string query)
         {
+            
             if (string.IsNullOrWhiteSpace(query))
                 return BadRequest("Query is required");
 

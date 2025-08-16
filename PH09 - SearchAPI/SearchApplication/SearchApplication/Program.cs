@@ -63,8 +63,9 @@ class Program
             });
 
         var app = builder.Build();
-        app.UseMetricServer(9184);
+        // app.UseMetricServer(9184);
         app.UseHttpMetrics(); 
+        app.MapMetrics();
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
