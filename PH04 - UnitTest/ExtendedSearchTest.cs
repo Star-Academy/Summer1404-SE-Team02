@@ -1,39 +1,51 @@
-using Xunit;
-using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
+using InvertedIndexIR.Filters.Abstraction;
+using InvertedIndexIR.DTO;
+using InvertedIndexIR.Search.Abstraction;
+using InvertedIndexIR.Search.Extended;
+using Xunit;
+using NSubstitute;
 
 namespace ExtendedSearchTests
 {
     public class ExtendedSearchTests
     {
+        private readonly IExtendedSearch _sut;
+        private readonly IFilter _filter1;
+        private readonly IFilter _filter2;
+
+        public ExtendedSearchTests()
+        {
+            _sut = new ExtendedSearch();
+            _filter1 = NSubstitute.Substitute.For<IFilter>();
+            _filter2 = NSubstitute.Substitute.For<IFilter>();
+        }
+        
         [Fact]
         public void Search_Returns_Intersection_Of_All_Filters()
         {
             // Arrange
             var index = new InvertedIndex();
-            index.documentNames = new HashSet<string>() { "doc1", "doc2",  "doc3", "doc4" };
-            var query = Mock.Of<IQuery>();
+            var query = new Query();
+            index.DocumentNames = new HashSet<string>() { "doc1", "doc2",  "doc3", "doc4" };
+            
+            _filter1.ApplyFilter(Arg.Any<Query>(), Arg.Any<InvertedIndex>())
+                .Returns(new List<string> { "doc1", "doc2" });
 
-            var mockFilter1 = new Mock<IFilter>();
-            mockFilter1.Setup(f => f.ApplyFilter(It.IsAny<IQuery>(), It.IsAny<InvertedIndex>()))
-                       .Returns(new HashSet<string> { "doc1", "doc2" });
-
-            var mockFilter2 = new Mock<IFilter>();
-            mockFilter2.Setup(f => f.ApplyFilter(It.IsAny<IQuery>(), It.IsAny<InvertedIndex>()))
-                       .Returns(new HashSet<string> { "doc2", "doc3" });
-
-
-            var search = new ExtendedSearch();
-            search.AddFilter(mockFilter1.Object);
-            search.AddFilter(mockFilter2.Object);
-
+            _filter2.ApplyFilter(Arg.Any<Query>(), Arg.Any<InvertedIndex>())
+                .Returns(new List<string> { "doc2", "doc3" });
+            
+            _sut.AddFilter(_filter1);
+            _sut.AddFilter(_filter2);
+            
             // Act
-            var result = search.Search(query, index).ToHashSet();
+            var result = _sut.Search(query, index);
 
             // Assert
-            Assert.Single(result);
-            Assert.Contains("doc2", result);
+            result.Should().ContainSingle(x => x == "doc2");
         }
 
         [Fact]
@@ -41,17 +53,12 @@ namespace ExtendedSearchTests
         {
             // Arrange 
             var index = new InvertedIndex();
-            // mockIndex.Setup(i => i.GetDocumentNames()).Returns(new List<string> { "doc1", "doc2" });
-            index.documentNames = new HashSet<string>() { "doc1", "doc2" };
-            var query = Mock.Of<IQuery>();
+            var query = new Query();
+            index.DocumentNames = new HashSet<string>() { "doc1", "doc2" };
             // Act
-            var search = new ExtendedSearch();
-
-            var result = search.Search(query, index).ToList();
+            var result = _sut.Search(query, index).ToList();
             // Assert
-            Assert.Equal(2, result.Count);
-            Assert.Contains("doc1", result);
-            Assert.Contains("doc2", result);
+            result.Should().HaveCount(2).And.Contain(new[] { "doc1", "doc2" });
         }
     }
 }

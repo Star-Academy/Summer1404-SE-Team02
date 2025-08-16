@@ -1,79 +1,83 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using Xunit;
-// using InvertedIndexIR.InputParser;
+using InvertedIndexIR.InputParser;
+using InvertedIndexIR.InputParser.Abstraction;
 
-namespace InvertedIndexIR.Tests
+namespace InvertedIndexTests
 {
     public class InputParserTests
     {
+        private IInputParser _sut;
+
+        public InputParserTests()
+        {
+            _sut = new InputParser();
+        }
+        
         [Fact]
         public void ParseInput_ReturnsCorrectDictionary_ForSimpleInput()
         {
             // Arrange
-            var parser = new InputParser();
             string input = "+cat -dog fish";
             string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
             var notations = new List<string> { "+", "-"};
 
             // Act
-            var result = parser.ParseInput(input, pattern, notations);
+            var result = _sut.ParseInput(input, pattern, notations);
 
             // Assert
-            Assert.Equal(new List<string> { "CAT" }, result["+"]);
-            Assert.Equal(new List<string> { "DOG" }, result["-"]);
-            Assert.Equal(new List<string> { "FISH" }, result[""]);
+            result.Should().BeEquivalentTo(new List<string> {"+CAT", "-DOG", "FISH"});
+
         }
 
         [Fact]
         public void ParseInput_PutsUnprefixedWordsInDefaultKey()
         {
             // Arrange
-            var parser = new InputParser();
             string input = "apple \"banana is good\" -orange";
             string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
             var notations = new List<string> { "+", "-"};
 
             // Act
-            var result = parser.ParseInput(input, pattern, notations);
+            var result = _sut.ParseInput(input, pattern, notations);
 
             // Assert
-            Assert.Equal(new List<string> { "APPLE", "BANANA IS GOOD" }, result[""]);
-            Assert.Equal(new List<string> { "ORANGE" }, result["-"]);
+            result.Should().BeEquivalentTo(new List<string> { "APPLE", "BANANA IS GOOD", "-ORANGE" });
+
         }
 
         [Fact]
         public void ParseInput_RemovesSurroundingQuotes()
         {
             // Arrange
-            var parser = new InputParser();
             string input = "+\"cat\" -\"dog\" \"something\"";
             string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
             var notations = new List<string> { "+", "-" };
 
             // Act
-            var result = parser.ParseInput(input, pattern, notations);
+            var result = _sut.ParseInput(input, pattern, notations);
 
             // Assert
-            Assert.Equal(new List<string> { "CAT" }, result["+"]);
-            Assert.Equal(new List<string> { "DOG" }, result["-"]);
-            Assert.Equal(new List<string> { "SOMETHING" }, result[""]);
+            result.Should().BeEquivalentTo(new List<string> { "+CAT", "-DOG", "SOMETHING" });
+
         }
 
         [Fact]
         public void ParseInput_ReturnsEmptyLists_WhenNoMatches()
         {
             // Arrange
-            var parser = new InputParser();
-            string input = "12345 67890";
-            string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";  // Won't match numbers
+            string input = "";
+            string pattern = @"([+-]?""[^""]+""|[+-]?\S+)";
             var notations = new List<string> { "+", "-" };
 
             // Act
-            var result = parser.ParseInput(input, pattern, notations);
+            var result = _sut.ParseInput(input, pattern, notations);
 
             // Assert
-            Assert.Empty(result["-"]);
-            Assert.Empty(result["+"]);
+            result.Should().BeEmpty();
         }
     }
 }
