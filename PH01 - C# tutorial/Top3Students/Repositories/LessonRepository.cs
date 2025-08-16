@@ -16,19 +16,20 @@ public class LessonRepository : ILessonRepository
         {
             LessonName = name
         }).ToList();
+        
         foreach (var lesson in lessons)
         {
             AddLesson(lesson);
         }
-
-        _dbContextFactory.CreateLessonDbContext().SaveChanges();
     }
 
     public void AddLesson(Lesson lesson)
     {
+        var lessonDbContext = _dbContextFactory.CreateLessonDbContext();
         if (GetLesson(lesson.LessonName) != null)
         {
-            _dbContextFactory.CreateLessonDbContext().Lessons.Add(lesson);
+            lessonDbContext.Lessons.Add(lesson);
+            lessonDbContext.SaveChanges();
         }
     }
 

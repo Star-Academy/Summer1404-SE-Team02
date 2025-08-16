@@ -12,8 +12,8 @@ public class ScoreRepository : IScoreRepository
     }
     public void AddScores(List<ScoreItem> scoreItems)
     {
-        var _uniLessonContext = _universityDbContextFactory.CreateLessonDbContext();
-        var lessonMap = _uniLessonContext.Lessons
+        var uniLessonContext = _universityDbContextFactory.CreateLessonDbContext();
+        var lessonMap = uniLessonContext.Lessons
             .ToDictionary(l => l.LessonName, l => l.LessonId);
         
         var scores = scoreItems.Select(si => new Score
@@ -26,16 +26,15 @@ public class ScoreRepository : IScoreRepository
         {
             AddScore(score);
         }
-
-        _universityDbContextFactory.CreateScoreDbContext().SaveChanges();
     }
 
     public void AddScore(Score score)
     {
-
+        var scoreDbContext = _universityDbContextFactory.CreateScoreDbContext();
         if (GetScore(score.StudentNumber, score.LessonId) != null)
         {
-            _universityDbContextFactory.CreateScoreDbContext().Scores.Add(score);
+            scoreDbContext.Scores.Add(score);
+            scoreDbContext.SaveChanges();
         }
     }
 

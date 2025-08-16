@@ -17,14 +17,14 @@ public class StudentRepository : IStudentRepository
         {
             AddStudent(student);
         }
-
-        _dbContextFactory.CreateStudentDbContext().SaveChanges();
     }
     public void AddStudent(Student student)
     {
+        var studentDbContext = _dbContextFactory.CreateStudentDbContext();
         if (GetStudent(student.StudentNumber) != null)
         {
-            _dbContextFactory.CreateStudentDbContext().Students.Add(student);
+            studentDbContext.Students.Add(student);
+            studentDbContext.SaveChanges();
         }
     }
 
